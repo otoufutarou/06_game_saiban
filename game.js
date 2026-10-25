@@ -25,7 +25,7 @@
   const transitionDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 100;
   const notices = new Set();
   let characters = new Map(), state, saved = null, busy = false, pending = null, returnFocus = null, scrollSaveFrame = null;
-  let tutorialTimer = null, tutorialSegments = [], tutorialIndex = 0, tutorialText = "", tutorialContent = null, tutorialActionReadyAt = 0;
+  let dialogue = null;
 
   function notice(message) {
     notices.add(message);
@@ -184,53 +184,67 @@
     save();
     render();
   }
-  function stopTutorialTyping() {
-    if (tutorialTimer !== null) window.clearInterval(tutorialTimer);
-    tutorialTimer = null;
+  function stopDialogueTyping() {
+    if (dialogue && dialogue.timer !== null) window.clearInterval(dialogue.timer);
+    if (dialogue) dialogue.timer = null;
   }
-  function typeTutorialLine() {
-    stopTutorialTyping();
-    tutorialText = TUTORIAL[state.tutorialStep];
-    tutorialSegments = typeof Intl.Segmenter === "function"
-      ? [...new Intl.Segmenter("ja", { granularity: "grapheme" }).segment(tutorialText)].map(part => part.segment)
-      : Array.from(tutorialText);
-    tutorialIndex = 0;
-    tutorialContent.textContent = "";
+  function typeDialogueLine() {
+    stopDialogueTyping();
+    dialogue.text = dialogue.lines[dialogue.line];
+    dialogue.segments = typeof Intl.Segmenter === "function"
+      ? [...new Intl.Segmenter("ja", { granularity: "grapheme" }).segment(dialogue.text)].map(part => part.segment)
+      : Array.from(dialogue.text);
+    dialogue.index = 0;
+    dialogue.content.textContent = "";
     const writeNext = () => {
-      tutorialIndex++;
-      tutorialContent.textContent = tutorialSegments.slice(0, tutorialIndex).join("");
-      if (tutorialIndex >= tutorialSegments.length) stopTutorialTyping();
+      dialogue.index++;
+      dialogue.content.textContent = dialogue.segments.slice(0, dialogue.index).join("");
+      if (dialogue.index >= dialogue.segments.length) stopDialogueTyping();
     };
-    if (tutorialSegments.length) {
+    if (dialogue.segments.length) {
       writeNext();
-      if (tutorialIndex < tutorialSegments.length) tutorialTimer = window.setInterval(writeNext, TYPEWRITER_INTERVAL_MS);
+      if (dialogue.index < dialogue.segments.length) dialogue.timer = window.setInterval(writeNext, TYPEWRITER_INTERVAL_MS);
     }
   }
-  function advanceTutorial() {
-    if (Date.now() < tutorialActionReadyAt) return;
-    tutorialActionReadyAt = Date.now() + 250;
-    if (tutorialTimer !== null) {
-      window.clearInterval(tutorialTimer);
-      tutorialTimer = null;
-      tutorialIndex = tutorialSegments.length;
-      tutorialContent.textContent = tutorialText;
-      return;
-    }
-    if (tutorialIndex < tutorialSegments.length) return;
-    if (state.tutorialStep < TUTORIAL.length - 1) {
-      state.tutorialStep++;
-      save();
-      typeTutorialLine();
-      return;
-    }
-    change(() => {
-      state.screen = "review";
-      save();
-    });
+  function startDialogue(lines, line, content, onAdvance, onComplete) {
+    stopDialogueTyping();
+    dialogue = { lines, line, content, onAdvance, onComplete, timer: null };
+    typeDialogueLine();
   }
+  function advanceDialogue() {
+    if (!dialogue || busy || dialog.open) return;
+    if (dialogue.index < dialogue.segments.length) {
+      stopDialogueTyping();
+      dialogue.index = dialogue.segments.length;
+      dialogue.content.textContent = dialogue.text;
+      return;
+    }
+    if (dialogue.line < dialogue.lines.length - 1) {
+      dialogue.line++;
+      dialogue.onAdvance(dialogue.line);
+      typeDialogueLine();
+      return;
+    }
+    const onComplete = dialogue.onComplete;
+    stopDialogueTyping();
+    dialogue = null;
+    onComplete();
+  }
+  document.querySelector("#viewport").addEventListener("click", event => {
+    if (!dialogue || busy || dialog.open) return;
+    event.preventDefault();
+    event.stopPropagation();
+    advanceDialogue();
+  }, { capture: true });
   function topLine() {
     const top = element("header", "topline");
-    top.append(element("h1", "", "報告書審査"), element("p", "", `第 ${state.review + 1} 回 / 全5回`));
+    const counter = element("p", "review-counter");
+    counter.setAttribute("aria-label", `審査回数 ${state.review + 1}/5`);
+    const plate = element("img");
+    plate.src = "無題42_20261025183115.png";
+    plate.alt = "";
+    counter.append(plate, element("span", "", `${state.review + 1}/5`));
+    top.append(element("h1", "", "報告書審査"), counter);
     scene.append(top);
   }
   function capturePaperScroll() {
@@ -372,7 +386,8 @@
     scene.append(panel);
   }
   function render() {
-    stopTutorialTyping();
+    stopDialogueTyping();
+    dialogue = null;
     const fading = scene.classList.contains("fading");
     scene.replaceChildren();
     scene.className = state?.screen || "title";
@@ -381,11 +396,17 @@
     switch (state.screen) {
       case "tutorial":
         titleMark();
-        const tutorialSpeech = button("", advanceTutorial, "speech");
-        tutorialContent = element("p");
+        const tutorialSpeech = button("", advanceDialogue, "speech");
+        const tutorialContent = element("p");
         tutorialSpeech.append(tutorialContent, element("small", "", "タップ / Enter で次へ ▼"));
         scene.append(tutorialSpeech);
-        typeTutorialLine();
+        startDialogue(TUTORIAL, state.tutorialStep, tutorialContent, line => {
+          state.tutorialStep = line;
+          save();
+        }, () => change(() => {
+          state.screen = "review";
+          save();
+        }));
         break;
       case "review": review(); break;
       case "result": result(); break;
