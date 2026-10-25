@@ -14,8 +14,8 @@
   const DATA_ERROR = "報告書の読み込みに失敗しました。HTTPサーバーで起動し、データファイルを確認してください。";
   const scene = document.querySelector("#scene");
   const game = document.querySelector("#game");
-  const transition = document.querySelector("#transition");
   const dialog = document.querySelector("#confirmation");
+  const transitionDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 100;
   const notices = new Set();
   let characters = new Map(), state, saved = null, busy = false, pending = null, returnFocus = null, scrollSaveFrame = null;
 
@@ -58,6 +58,7 @@
       if (raw === null) return;
       const parsed = JSON.parse(raw);
       if (!validSave(parsed)) throw new Error("invalid save");
+      if (parsed.screen === "detail") parsed.screen = "review";
       saved = parsed;
     } catch {
       saved = null;
@@ -94,29 +95,18 @@
     if (busy) return;
     busy = true;
     scene.inert = true;
-    transition.replaceChildren();
-    for (let row = 0; row < 16; row++) {
-      for (let col = 0; col < 9; col++) {
-        const tile = element("i", "tile");
-        tile.style.left = `${col * 96}px`;
-        tile.style.top = `${row * 96}px`;
-        tile.style.setProperty("--delay", `${(15 - row) * 4}ms`);
-        transition.append(tile);
-      }
-    }
-    transition.classList.add("active");
+    if (transitionDuration) scene.classList.add("fading");
     window.setTimeout(() => {
       action();
       render();
-    }, 350);
-    window.setTimeout(() => {
-      transition.classList.remove("active");
-      transition.replaceChildren();
-      busy = false;
-      scene.inert = false;
-      const target = scene.querySelector("[data-focus], h1, h2, button");
-      if (target) { if (!target.matches("button")) target.tabIndex = -1; target.focus({ preventScroll: true }); }
-    }, 800);
+      scene.classList.remove("fading");
+      window.setTimeout(() => {
+        busy = false;
+        scene.inert = false;
+        const target = scene.querySelector("[data-focus], h1, h2, button");
+        if (target) { if (!target.matches("button")) target.tabIndex = -1; target.focus({ preventScroll: true }); }
+      }, transitionDuration);
+    }, transitionDuration);
   }
   function angel() {
     const image = element("img", "angel");
@@ -154,7 +144,13 @@
     top.append(element("h1", "", "報告書審査"), element("p", "", `第 ${state.review + 1} 回 / 全5回`));
     scene.append(top);
   }
-  function paper(detail = false) {
+  function capturePaperScroll() {
+    const content = scene.querySelector(".paper-content");
+    if (state?.screen === "review" && content?.dataset.restored === "true") {
+      state.scrolls[GROUPS[state.review][state.candidate]] = content.scrollTop;
+    }
+  }
+  function paper() {
     const person = characters.get(GROUPS[state.review][state.candidate]);
     const outer = element("article", "paper");
     const image = element("img", "paper-frame");
@@ -162,36 +158,26 @@
     image.alt = "";
     const content = element("div", "paper-content");
     content.tabIndex = 0;
-    content.setAttribute("aria-label", `${person.name}の基本情報`);
+    content.setAttribute("aria-label", `${person.name}の報告書全文`);
     content.append(element("h2", "", person.name), element("p", "id", `ID ${person.id}`));
     content.append(element("h3", "", "基本情報"), element("p", "", person.basicInfo));
     content.append(element("h3", "", "死因"), element("p", "", person.causeOfDeath));
     content.append(element("h3", "", "家族構成"), element("p", "", person.family.join("\n")));
-    if (detail) {
-      content.setAttribute("aria-label", `${person.name}の報告書全文`);
-      for (const section of person.sections) content.append(element("h3", "", section.label), element("p", "", section.text));
-      let restored = false;
-      content.addEventListener("scroll", () => {
-        if (!restored) return;
-        state.scrolls[person.id] = content.scrollTop;
-        scheduleScrollSave();
-      }, { passive: true });
-      requestAnimationFrame(() => {
-        content.scrollTop = state.scrolls[person.id] || 0;
-        requestAnimationFrame(() => { restored = true; });
-      });
-    }
+    for (const section of person.sections) content.append(element("h3", "", section.label), element("p", "", section.text));
+    content.addEventListener("scroll", () => {
+      if (content.dataset.restored !== "true") return;
+      state.scrolls[person.id] = content.scrollTop;
+      scheduleScrollSave();
+    }, { passive: true });
+    requestAnimationFrame(() => {
+      content.scrollTop = state.scrolls[person.id] || 0;
+      requestAnimationFrame(() => { content.dataset.restored = "true"; });
+    });
     outer.append(image, content);
-    if (!detail) outer.append(button("詳しい報告書を読む", () => change(() => { state.screen = "detail"; save(); }), "detail-button"));
-    scene.append(outer);
+    return outer;
   }
-  function select(index) {
-    if (index === state.candidate) return;
-    change(() => { state.candidate = index; save(); });
-  }
-  function review() {
-    topLine();
-    paper();
+  function candidateCards() {
+    const cards = [];
     for (const [offset, side, label] of [[-1, "left", "前の候補者"], [1, "right", "次の候補者"]]) {
       const index = (state.candidate + offset + 3) % 3;
       const person = characters.get(GROUPS[state.review][index]);
@@ -200,20 +186,38 @@
       copy.append(element("small", "", `ID ${person.id}`), element("span", "", person.name), element("span", "mini-info", person.basicInfo));
       mini.append(copy);
       mini.setAttribute("aria-label", `${label} ${person.name}の報告書`);
-      scene.append(mini);
-      const arrow = button(side === "left" ? "←" : "→", () => select(index), `arrow ${side}`);
-      arrow.setAttribute("aria-label", label);
-      scene.append(arrow);
+      cards.push(mini, button(side === "left" ? "←" : "→", () => select(index), `arrow ${side}`));
+      cards[cards.length - 1].setAttribute("aria-label", label);
     }
+    return cards;
+  }
+  function reviewContent() {
+    const content = element("div", "review-content");
+    content.append(paper(), ...candidateCards());
+    return content;
+  }
+  function select(index) {
+    if (index === state.candidate) return;
+    capturePaperScroll();
+    if (scrollSaveFrame !== null) cancelAnimationFrame(scrollSaveFrame);
+    scrollSaveFrame = null;
+    state.candidate = index;
+    save();
+    scene.querySelector(".review-content").replaceWith(reviewContent());
+    scene.querySelectorAll(".choice-row button").forEach((choice, choiceIndex) => {
+      choice.setAttribute("aria-current", String(choiceIndex === index));
+    });
+  }
+  function review() {
+    topLine();
+    scene.append(reviewContent());
     const choices = element("section", "choices");
     choices.append(element("h2", "", "天国に送る人を1人選んでください"));
     const row = element("div", "choice-row");
     GROUPS[state.review].forEach((id, index) => {
       const person = characters.get(id);
       const choose = button(person.name, () => {
-        state.candidate = index;
-        save();
-        render();
+        select(index);
         const replacement = scene.querySelectorAll(".choice-row button")[index];
         openConfirmation(`${person.name}を天国に送りますか？`, () => commit(id), replacement);
       });
@@ -249,6 +253,7 @@
   });
   function commit(id) {
     if (busy || state.screen !== "review" || state.choices[state.review] !== null || !GROUPS[state.review].includes(id)) return;
+    capturePaperScroll();
     state.choices[state.review] = id;
     state.screen = "result";
     save();
@@ -272,8 +277,10 @@
     }), "proceed"));
   }
   function render() {
+    const fading = scene.classList.contains("fading");
     scene.replaceChildren();
     scene.className = state?.screen || "title";
+    if (fading) scene.classList.add("fading");
     if (!state) { title(); return; }
     switch (state.screen) {
       case "tutorial":
@@ -284,13 +291,6 @@
         }), "タップ / Enter で次へ ▼");
         break;
       case "review": review(); break;
-      case "detail":
-        topLine();
-        paper(true);
-        scene.append(button("報告書を閉じる", () => change(() => { state.screen = "review"; save(); }), "close-detail"));
-        angel();
-        scene.append(element("p", "detail-guide", "報告書は上下にスクロールできます。"));
-        break;
       case "result": result(); break;
       case "complete":
         scene.append(element("h1", "complete-message", "全5回の審判が終了しました"));
@@ -351,7 +351,7 @@
         return false;
       });
       const text = JSON.stringify(data) + WELCOME + TUTORIAL.join("") + RESULT +
-        "天国審査死者審査所人間部門はじめからつづき第回全報告書基本情報死因家族構成詳しい読む閉じる天国地獄審査結果次の進む審判を終える終了しました保存データ上書き始めますか送はい考え直すタップ上下スクロールできます選んでください ID0123456789/←→▼？";
+        "天国審査死者審査所人間部門はじめからつづき第回全報告書基本情報死因家族構成天国地獄審査結果次の進む審判を終える終了しました保存データ上書き始めますか送はい考え直す上下にスクロールできます選んでください ID0123456789/←→▼？";
       const missing = [...new Set([...text].filter(char => !/\s/.test(char) && !hasGlyph(char.codePointAt(0))))];
       if (missing.length) {
         const sample = missing.slice(0, 20).join("") + (missing.length > 20 ? ` ほか${missing.length - 20}文字` : "");
