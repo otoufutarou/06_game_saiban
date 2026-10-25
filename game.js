@@ -117,7 +117,12 @@
   });
   function resize() {
     const box = document.querySelector("#viewport").getBoundingClientRect();
-    document.documentElement.style.setProperty("--scale", Math.min(box.width / 864, box.height / 1536));
+    const scale = box.width / 864;
+    const verticalCrop = Math.max(0, 1536 - box.height / scale);
+    const verticalOffset = Math.max(0, (box.height - 1536 * scale) / 2);
+    document.documentElement.style.setProperty("--scale", scale);
+    document.documentElement.style.setProperty("--vertical-crop", `${verticalCrop}px`);
+    document.documentElement.style.setProperty("--vertical-offset", `${verticalOffset}px`);
   }
   window.addEventListener("resize", resize);
   if (window.visualViewport) window.visualViewport.addEventListener("resize", resize);
@@ -240,6 +245,7 @@
     const image = element("img", "paper-frame");
     image.src = "frame_20261025170920.png";
     image.alt = "";
+    const viewport = element("div", "report-viewport");
     const content = element("div", "paper-content");
     content.tabIndex = 0;
     content.setAttribute("aria-label", `${person.name}の報告書全文`);
@@ -257,7 +263,8 @@
       content.scrollTop = state.scrolls[person.id] || 0;
       requestAnimationFrame(() => { content.dataset.restored = "true"; });
     });
-    outer.append(image, content);
+    viewport.append(content);
+    outer.append(image, viewport);
     return outer;
   }
   function candidateCards() {
