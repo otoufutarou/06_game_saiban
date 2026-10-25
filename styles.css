@@ -43,10 +43,10 @@ img { image-rendering: pixelated; pointer-events: none; }
 .paper { position: absolute; width: 760px; height: calc(1070px - var(--vertical-crop, 0px)); top: 178px; left: 52px; }
 .paper-frame { width: 100%; height: 100%; object-fit: contain; object-position: center; position: absolute; inset: 0; }
 .report-viewport { position: absolute; inset: 248px 156px 170px; overflow: hidden; }
-.paper-content { width: 100%; height: 100%; min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 32px; line-height: 1.4; overflow-wrap: anywhere; overscroll-behavior: contain; }
-.paper h2 { font-size: 40px; line-height: 1.3; text-align: center; margin-bottom: 16px; overflow-wrap: anywhere; }
-.paper h3 { font-size: 34px; line-height: 1.35; margin: 18px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
-.paper .id { font-size: 24px; line-height: 1.3; text-align: center; margin-bottom: 13px; }
+.paper-content { width: 100%; height: 100%; min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 27px; line-height: 1.5; overflow-wrap: anywhere; overscroll-behavior: contain; }
+.paper h2 { font-size: 35px; line-height: 1.3; text-align: center; margin-bottom: 14px; overflow-wrap: anywhere; }
+.paper h3 { font-size: 29px; line-height: 1.4; margin: 16px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
+.paper .id { font-size: 21px; line-height: 1.3; text-align: center; margin-bottom: 12px; }
 .paper p { white-space: pre-line; }
 .mini { position: absolute; top: 530px; width: 300px; height: 460.1px; padding: 0; font-size: 24px; line-height: 1.6; background: url("frame_20261025170920.png") center / contain no-repeat; border: 0; box-shadow: none; overflow: hidden; overflow-wrap: anywhere; image-rendering: pixelated; }
 .mini.left { left: -168px; }
@@ -57,7 +57,7 @@ img { image-rendering: pixelated; pointer-events: none; }
 .mini-copy small { font-size: 20px; }
 .mini-copy .mini-info { font-size: 20px; max-height: 115px; overflow: hidden; }
 .mini:hover:not(:disabled) { background-color: #e0f9fb88; }
-.arrow { position: absolute; top: 1020px; padding: 10px 20px; font-size: 38px; }
+.arrow { position: absolute; top: 1188px; padding: 10px 20px; font-size: 42px; }
 .arrow.left { left: 42px; }
 .arrow.right { right: 42px; }
 .choices { position: absolute; top: calc(1248px - var(--vertical-crop, 0px)); left: 62px; width: 740px; height: 281px; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 32px 56px; background: url("無題38_20261025004445.png") center / 100% auto no-repeat; }
