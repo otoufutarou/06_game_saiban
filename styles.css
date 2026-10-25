@@ -17,8 +17,8 @@ button:focus-visible, [tabindex]:focus-visible { outline: 6px solid #d58c28; out
 h1, h2, h3, p { margin: 0; font-weight: normal; }
 img { image-rendering: pixelated; pointer-events: none; }
 #scene { position: absolute; inset: 0; }
-.title, .tutorial, .complete { background: radial-gradient(ellipse at 15% 16%, #fffdf5 0 12%, transparent 32%), radial-gradient(ellipse at 90% 40%, #ffffffdb 0 13%, transparent 35%), linear-gradient(#c7eff6, #f1fbf7 62%, #c9edf2); }
-.result { background: radial-gradient(ellipse at 50% 40%, #f4ffff 0 18%, transparent 55%), linear-gradient(#d8f5f6, #c0e8ec); }
+.title, .tutorial, .complete { background: #e4f7f8; }
+.result { background: #d2f0f2; }
 .angel { position: absolute; left: 72px; bottom: 570px; width: 720px; height: auto; z-index: 2; }
 .title-mark { position: absolute; top: 175px; left: 100px; width: 664px; text-align: center; padding: 42px 0; background: #f8f7e9eb; border: 5px double #59758a; box-shadow: 9px 9px 0 #99bdc3; }
 .title-mark h1 { font-size: 88px; letter-spacing: 12px; }
