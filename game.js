@@ -157,10 +157,12 @@
     titleMark();
     const menu = element("nav", "menu");
     menu.setAttribute("aria-label", "タイトルメニュー");
-    menu.append(button("▶ はじめから", () => {
+    const start = button("はじめから", () => {
       if (saved) openConfirmation("保存データを上書きして\nはじめから始めますか？", () => startNew());
       else startNew();
-    }));
+    }, "menu-start");
+    start.setAttribute("aria-label", "▶ はじめから");
+    menu.append(start);
     const resume = button("つづきから", () => change(() => { state = structuredClone(saved); }));
     resume.disabled = !saved;
     menu.append(resume);
@@ -327,7 +329,7 @@
   }
   document.querySelector("#confirm-no").addEventListener("click", closeConfirmation);
   dialog.addEventListener("cancel", event => { event.preventDefault(); closeConfirmation(); });
-  document.querySelector("#confirm-yes").textContent = "▶ はい";
+  document.querySelector("#confirm-yes").setAttribute("aria-label", "▶ はい");
   document.querySelector("#confirm-yes").addEventListener("click", () => {
     if (!pending || busy) return;
     const action = pending;
@@ -352,11 +354,13 @@
     hell.append(element("strong", "", "地獄"));
     for (const id of GROUPS[state.review].filter(id => id !== chosen)) hell.append(element("p", "", characters.get(id).name));
     panel.append(hell);
-    panel.append(button(state.review === 4 ? "▶ 審判を終える" : "▶ 次の審査へ進む", () => change(() => {
+    const proceed = button(state.review === 4 ? "審判を終える" : "次の審査へ進む", () => change(() => {
       if (state.review === 4) state.screen = "complete";
       else { state.review++; state.candidate = 1; state.screen = "review"; }
       save();
-    }), "proceed"));
+    }), "proceed");
+    proceed.setAttribute("aria-label", `▶ ${state.review === 4 ? "審判を終える" : "次の審査へ進む"}`);
+    panel.append(proceed);
     scene.append(element("p", "result-dialogue", state.resultDialogues[state.review]));
     scene.append(panel);
   }
@@ -437,7 +441,7 @@
         return false;
       });
       const text = JSON.stringify(data) + WELCOME + TUTORIAL.join("") + FIRST_RESULT_DIALOGUE + RANDOM_RESULT_DIALOGUES.join("") +
-        "天国審査死者審査所人間部門はじめからつづき第回全報告書基本情報死因家族構成天国地獄審査結果次の進む審判を終える終了しました保存データ上書き始めますか送はい考え直す上下にスクロールできます選んでください ID0123456789/←→▼▶？";
+        "天国審査死者審査所人間部門はじめからつづき第回全報告書基本情報死因家族構成天国地獄審査結果次の進む審判を終える終了しました保存データ上書き始めますか送はい考え直す上下にスクロールできます選んでください ID0123456789/←→▼？";
       const missing = [...new Set([...text].filter(char => !/\s/.test(char) && !hasGlyph(char.codePointAt(0))))];
       if (missing.length) {
         const sample = missing.slice(0, 20).join("") + (missing.length > 20 ? ` ほか${missing.length - 20}文字` : "");
