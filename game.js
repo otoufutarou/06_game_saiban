@@ -145,12 +145,6 @@
       }, transitionDuration);
     }, transitionDuration);
   }
-  function angel() {
-    const image = element("img", "angel");
-    image.src = "無題34_20261025000459.png";
-    image.alt = "";
-    scene.append(image);
-  }
   function speech(text, action, hint) {
     const node = action ? button("", action, "speech") : element("section", "speech");
     if (!action) node.setAttribute("aria-label", "ベガの案内");
@@ -236,17 +230,6 @@
     event.stopPropagation();
     advanceDialogue();
   }, { capture: true });
-  function topLine() {
-    const top = element("header", "topline");
-    const counter = element("p", "review-counter");
-    counter.setAttribute("aria-label", `審査回数 ${state.review + 1}/5`);
-    const plate = element("img");
-    plate.src = "無題42_20261025183115.png";
-    plate.alt = "";
-    counter.append(plate, element("span", "", `${state.review + 1}/5`));
-    top.append(counter);
-    scene.append(top);
-  }
   function capturePaperScroll() {
     const content = scene.querySelector(".paper-content");
     if (state?.screen === "review" && content?.dataset.restored === "true") {
@@ -256,9 +239,6 @@
   function paper() {
     const person = characters.get(GROUPS[state.review][state.candidate]);
     const outer = element("article", "paper");
-    const image = element("img", "paper-frame");
-    image.src = "frame_20261025170920.png";
-    image.alt = "";
     const viewport = element("div", "report-viewport");
     const content = element("div", "paper-content");
     content.tabIndex = 0;
@@ -278,7 +258,7 @@
       requestAnimationFrame(() => { content.dataset.restored = "true"; });
     });
     viewport.append(content);
-    outer.append(image, viewport);
+    outer.append(viewport);
     return outer;
   }
   function candidateCards() {
@@ -315,7 +295,6 @@
     });
   }
   function review() {
-    topLine();
     scene.append(reviewContent());
     const choices = element("section", "choices");
     choices.append(element("h2", "", "天国に送る人を1人選んでください"));
@@ -333,7 +312,6 @@
     });
     choices.append(row);
     scene.append(choices);
-    angel();
   }
   function openConfirmation(text, action, focus) {
     if (dialog.open || busy) return;
