@@ -32,15 +32,18 @@ img { image-rendering: pixelated; pointer-events: none; }
 .speech:hover:not(:disabled), .speech:active:not(:disabled) { background: transparent; box-shadow: none; transform: none; }
 .speech p { white-space: pre-line; font-size: 27px; line-height: 1.22; overflow-wrap: anywhere; }
 .speech small { font-size: 20px; line-height: 1.2; text-align: right; }
-.topline { position: absolute; top: 44px; left: 50px; right: 50px; display: flex; align-items: center; justify-content: space-between; font-size: 30px; }
-.topline h1 { font-size: 36px; }
+.topline { position: absolute; top: 44px; left: 50px; right: 50px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.topline h1, .topline p { border: 3px dotted #233c56; padding: 9px 12px; color: #233c56; background: #f8f7e9; line-height: 1.2; }
+.topline h1 { min-width: 250px; font-size: 32px; }
+.topline p { width: 330px; min-width: 330px; font-size: 28px; text-align: center; white-space: nowrap; }
 .review-content { position: absolute; inset: 0; }
 .paper { position: absolute; width: 760px; height: 1070px; top: 178px; left: 52px; }
-.paper-frame { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; }
-.paper-content { position: absolute; inset: 210px 70px 155px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 28px; line-height: 1.45; overflow-wrap: anywhere; overscroll-behavior: contain; }
-.paper h2 { font-size: 36px; line-height: 1.3; text-align: center; margin-bottom: 16px; overflow-wrap: anywhere; }
-.paper h3 { font-size: 30px; line-height: 1.35; margin: 18px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
-.paper .id { font-size: 22px; line-height: 1.3; text-align: center; margin-bottom: 13px; }
+.paper-frame { width: 100%; height: 100%; object-fit: contain; object-position: center; position: absolute; inset: 0; }
+.report-viewport { position: absolute; inset: 248px 156px 170px; overflow: hidden; }
+.paper-content { width: 100%; height: 100%; min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 32px; line-height: 1.4; overflow-wrap: anywhere; overscroll-behavior: contain; }
+.paper h2 { font-size: 40px; line-height: 1.3; text-align: center; margin-bottom: 16px; overflow-wrap: anywhere; }
+.paper h3 { font-size: 34px; line-height: 1.35; margin: 18px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
+.paper .id { font-size: 24px; line-height: 1.3; text-align: center; margin-bottom: 13px; }
 .paper p { white-space: pre-line; }
 .mini { position: absolute; top: 530px; width: 300px; height: 460.1px; padding: 0; font-size: 24px; line-height: 1.6; background: url("frame_20261025170920.png") center / contain no-repeat; border: 0; box-shadow: none; overflow: hidden; overflow-wrap: anywhere; image-rendering: pixelated; }
 .mini.left { left: -168px; }
