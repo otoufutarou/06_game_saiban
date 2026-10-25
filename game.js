@@ -17,7 +17,7 @@
   const transition = document.querySelector("#transition");
   const dialog = document.querySelector("#confirmation");
   const notices = new Set();
-  let characters = new Map(), state, saved = null, busy = false, pending = null, returnFocus = null;
+  let characters = new Map(), state, saved = null, busy = false, pending = null, returnFocus = null, scrollSaveFrame = null;
 
   function notice(message) {
     notices.add(message);
@@ -65,13 +65,26 @@
     }
   }
   function save() {
+    if (scrollSaveFrame !== null) cancelAnimationFrame(scrollSaveFrame);
+    scrollSaveFrame = null;
     saved = structuredClone(state);
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
     catch { notice("保存できません。このページを閉じると進行が失われる場合があります。"); }
   }
+  function scheduleScrollSave() {
+    if (scrollSaveFrame !== null) return;
+    scrollSaveFrame = requestAnimationFrame(() => { scrollSaveFrame = null; save(); });
+  }
+  function flushScrollSave() {
+    if (scrollSaveFrame !== null) save();
+  }
+  window.addEventListener("pagehide", flushScrollSave);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushScrollSave();
+  });
   function resize() {
     const box = document.querySelector("#viewport").getBoundingClientRect();
-    game.style.setProperty("--scale", Math.min(box.width / 864, box.height / 1536));
+    document.documentElement.style.setProperty("--scale", Math.min(box.width / 864, box.height / 1536));
   }
   window.addEventListener("resize", resize);
   if (window.visualViewport) window.visualViewport.addEventListener("resize", resize);
@@ -158,11 +171,16 @@
     if (detail) {
       content.setAttribute("aria-label", `${person.name}の報告書全文`);
       for (const section of person.sections) content.append(element("h3", "", section.label), element("p", "", section.text));
+      let restored = false;
       content.addEventListener("scroll", () => {
+        if (!restored) return;
         state.scrolls[person.id] = content.scrollTop;
-        save();
+        scheduleScrollSave();
       }, { passive: true });
-      requestAnimationFrame(() => { content.scrollTop = state.scrolls[person.id] || 0; });
+      requestAnimationFrame(() => {
+        content.scrollTop = state.scrolls[person.id] || 0;
+        requestAnimationFrame(() => { restored = true; });
+      });
     }
     outer.append(image, content);
     if (!detail) outer.append(button("詳しい報告書を読む", () => change(() => { state.screen = "detail"; save(); }), "detail-button"));
@@ -178,7 +196,10 @@
     for (const [offset, side, label] of [[-1, "left", "前の候補者"], [1, "right", "次の候補者"]]) {
       const index = (state.candidate + offset + 3) % 3;
       const person = characters.get(GROUPS[state.review][index]);
-      const mini = button(person.name, () => select(index), `mini ${side}`);
+      const mini = button("", () => select(index), `mini ${side}`);
+      const copy = element("span", "mini-copy");
+      copy.append(element("small", "", `ID ${person.id}`), element("span", "", person.name), element("span", "mini-info", person.basicInfo));
+      mini.append(copy);
       mini.setAttribute("aria-label", `${label} ${person.name}の報告書`);
       scene.append(mini);
       const arrow = button(side === "left" ? "←" : "→", () => select(index), `arrow ${side}`);
@@ -204,7 +225,6 @@
     choices.append(row);
     scene.append(choices);
     angel();
-    speech("報告書を読み、\n天国に送る人を1人選んでください。");
   }
   function openConfirmation(text, action, focus) {
     if (dialog.open || busy) return;
@@ -274,7 +294,7 @@
         paper(true);
         scene.append(button("報告書を閉じる", () => change(() => { state.screen = "review"; save(); }), "close-detail"));
         angel();
-        speech("報告書は上下にスクロールできます。");
+        scene.append(element("p", "detail-guide", "報告書は上下にスクロールできます。"));
         break;
       case "result": result(); break;
       case "complete":
@@ -291,6 +311,10 @@
         Array.isArray(person.sections) && person.sections.every(section => string(section.label) && string(section.text)));
   }
   async function checkFont(data) {
+    for (const message of notices) {
+      if (message.startsWith("指定フォント")) notices.delete(message);
+    }
+    document.querySelector("#notice").textContent = [...notices].join(" ／ ");
     try {
       await document.fonts.load('28px "KH Dot Kabutochou 16"');
       if (!document.fonts.check('28px "KH Dot Kabutochou 16"')) throw new Error("font unavailable");
@@ -334,8 +358,16 @@
       const text = JSON.stringify(data) + WELCOME + TUTORIAL.join("") + RESULT +
         "天国審査死者審査所人間部門はじめからつづき第回全報告書基本情報死因家族構成詳しい読む閉じる天国地獄審査結果次の進む審判を終える終了しました保存データ上書き始めますか送はい考え直すタップ上下スクロールできます選んでください ID0123456789/←→▼？";
       const missing = [...new Set([...text].filter(char => !/\s/.test(char) && !hasGlyph(char.codePointAt(0))))];
-      if (missing.length) notice(`指定フォントに未収録の文字は端末フォントで表示します：${missing.join("")}`);
-    } catch { notice("指定フォントを読み込めません。端末フォントで表示しています。"); }
+      if (missing.length) {
+        const sample = missing.slice(0, 20).join("") + (missing.length > 20 ? ` ほか${missing.length - 20}文字` : "");
+        notice(`指定フォントに未収録の文字があります。ゲームを開始できません：${sample}`);
+        return false;
+      }
+      return true;
+    } catch {
+      notice("指定フォントを読み込めません。代替フォントには切り替えず、ゲームの開始を停止しています。");
+      return false;
+    }
   }
   async function initialize() {
     scene.replaceChildren(element("p", "loading", "報告書を読み込んでいます…"));
@@ -347,9 +379,12 @@
       characters = new Map(data.characters.map(person => [person.id, person]));
       notices.delete(DATA_ERROR);
       document.querySelector("#notice").textContent = [...notices].join(" ／ ");
+      if (!await checkFont(data)) {
+        scene.replaceChildren(button("指定フォントを確認できませんでした。\n再読み込みして確認する", () => window.location.reload(), "loading"));
+        return;
+      }
       loadSave();
       render();
-      checkFont(data);
     } catch {
       scene.replaceChildren(button("報告書を読み込めませんでした。\nもう一度読み込む", initialize, "loading"));
       notice(DATA_ERROR);
