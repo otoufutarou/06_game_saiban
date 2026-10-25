@@ -427,29 +427,39 @@
       }
       const hasGlyph = code => tables.some(([format, start]) => {
         if (format === 12) {
-          for (let i = 0; i < view.getUint32(start + 12); i++) {
-            const p = start + 16 + i * 12;
-            if (code >= view.getUint32(p) && code <= view.getUint32(p + 4)) return view.getUint32(p + 8) + code - view.getUint32(p) !== 0;
+          let low = 0, high = view.getUint32(start + 12);
+          while (low < high) {
+            const mid = (low + high) >>> 1;
+            const p = start + 16 + mid * 12;
+            if (view.getUint32(p + 4) < code) low = mid + 1;
+            else high = mid;
           }
-          return false;
+          if (low === view.getUint32(start + 12)) return false;
+          const p = start + 16 + low * 12;
+          const begin = view.getUint32(p);
+          return code >= begin && view.getUint32(p + 8) + code - begin !== 0;
         }
         const count = view.getUint16(start + 6) / 2;
-        for (let i = 0; i < count; i++) {
-          const end = view.getUint16(start + 14 + i * 2);
-          const begin = view.getUint16(start + 16 + count * 2 + i * 2);
-          if (code < begin || code > end) continue;
-          const delta = view.getInt16(start + 16 + count * 4 + i * 2);
-          const rangePos = start + 16 + count * 6 + i * 2;
-          const range = view.getUint16(rangePos);
-          if (!range) return ((code + delta) & 65535) !== 0;
-          const glyph = view.getUint16(rangePos + range + (code - begin) * 2);
-          return glyph !== 0 && ((glyph + delta) & 65535) !== 0;
+        let low = 0, high = count;
+        while (low < high) {
+          const mid = (low + high) >>> 1;
+          if (view.getUint16(start + 14 + mid * 2) < code) low = mid + 1;
+          else high = mid;
         }
-        return false;
+        if (low === count) return false;
+        const begin = view.getUint16(start + 16 + count * 2 + low * 2);
+        if (code < begin) return false;
+        const delta = view.getInt16(start + 16 + count * 4 + low * 2);
+        const rangePos = start + 16 + count * 6 + low * 2;
+        const range = view.getUint16(rangePos);
+        if (!range) return ((code + delta) & 65535) !== 0;
+        const glyph = view.getUint16(rangePos + range + (code - begin) * 2);
+        return glyph !== 0 && ((glyph + delta) & 65535) !== 0;
       });
       const text = JSON.stringify(data) + WELCOME + TUTORIAL.join("") + FIRST_RESULT_DIALOGUE + RANDOM_RESULT_DIALOGUES.join("") +
         "天国審査死者審査所人間部門はじめからつづき第回全報告書基本情報死因家族構成天国地獄審査結果次の進む審判を終える終了しました保存データ上書き始めますか送はい考え直す上下にスクロールできます選んでください ID0123456789/←→▼？";
-      const missing = [...new Set([...text].filter(char => !/\s/.test(char) && !hasGlyph(char.codePointAt(0))))];
+      const requiredCharacters = new Set([...text].filter(char => !/\s/.test(char)));
+      const missing = [...requiredCharacters].filter(char => !hasGlyph(char.codePointAt(0)));
       if (missing.length) {
         const sample = missing.slice(0, 20).join("") + (missing.length > 20 ? ` ほか${missing.length - 20}文字` : "");
         notice(`指定フォントに未収録の文字があります。ゲームを開始できません：${sample}`);
