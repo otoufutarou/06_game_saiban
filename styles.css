@@ -7,7 +7,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #b0c4de; }
 #viewport { position: fixed; inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); display: grid; place-items: center; overflow: hidden; }
-#game { width: 864px; height: 1536px; position: absolute; top: var(--vertical-offset, 0px); left: 50%; margin-left: -432px; overflow: hidden; transform: scale(var(--scale, .4)); transform-origin: top center; background: #d8f3f5 url("haikei_20261025004349.png") center / 100% 100% no-repeat; image-rendering: pixelated; }
+#game { width: 864px; height: 1536px; position: absolute; top: var(--vertical-offset, 0px); left: 50%; margin-left: -432px; overflow: hidden; transform: scale(var(--scale, .4)); transform-origin: top center; background: #d8f3f5; image-rendering: pixelated; }
 button { font: inherit; cursor: pointer; color: inherit; border: 3px solid #45627b; border-radius: 4px; background: #f8f7e9; padding: 15px 24px; line-height: 1.5; font-size: 28px; box-shadow: 0 5px 0 #8196a4; }
 button:hover:not(:disabled) { background: #e0f9fb; }
 button:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #8196a4; }
@@ -17,54 +17,43 @@ h1, h2, h3, p { margin: 0; font-weight: normal; }
 img { image-rendering: pixelated; pointer-events: none; }
 #scene { position: absolute; inset: 0; transition: opacity 100ms ease-in-out; }
 #scene.fading { opacity: 0; }
-.title, .tutorial { background: url("無題36_20261025003433.png") center / contain no-repeat; }
+.title, .tutorial { background: url("無題49_20261025211037.png") center / contain no-repeat; }
 .complete { background: #e4f7f8; }
-.review { --choices-top: calc(1220px - var(--vertical-crop, 0px)); background: url("7AD07084-08BB-44EB-B01D-755E3E6BECD9.png") center / contain no-repeat; }
-.result { background: url("無題41_20261025150015.png") center / contain no-repeat; }
-.angel { position: absolute; left: 72px; bottom: 570px; width: 720px; height: auto; z-index: 2; }
-.title-mark { position: absolute; top: 1030px; left: 190px; width: 484px; text-align: center; }
-.title-mark h1 { color: #a87720; font-size: 64px; line-height: 1.15; letter-spacing: 8px; }
+.review { --choices-top: calc(1220px - var(--vertical-crop, 0px)); background: url("無題48_20261025204959.png") center / contain no-repeat; }
+.result { background: #d8f3f5; }
+.title-mark { position: absolute; top: 800px; left: 170px; width: 524px; text-align: center; }
+.title-mark h1 { color: #a87720; font-size: 52px; line-height: 1.15; letter-spacing: 6px; }
 .title-mark p { font-size: 22px; margin-top: 8px; }
-.menu { position: absolute; top: 1145px; left: 200px; width: 464px; display: flex; gap: 22px; }
+.menu { position: absolute; top: 930px; left: 200px; width: 464px; display: flex; gap: 22px; }
 .menu button { flex: 1; min-width: 0; font-size: 25px; padding: 8px 4px; }
 .menu-start::before, #confirm-yes::before, .proceed::before { content: ""; display: inline-block; width: 0; height: 0; margin-right: .35em; border-top: .35em solid transparent; border-bottom: .35em solid transparent; border-left: .5em solid currentColor; vertical-align: -.05em; }
-.speech { position: absolute; left: 167px; top: 396px; width: 530px; height: 152px; border: 0; padding: 8px 16px; background: transparent; box-shadow: none; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+.speech { position: absolute; left: 145px; top: 190px; width: 574px; height: 150px; border: 0; padding: 8px 16px; background: transparent; box-shadow: none; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
 .speech:hover:not(:disabled), .speech:active:not(:disabled) { background: transparent; box-shadow: none; transform: none; }
 .speech p { white-space: pre-line; font-size: 27px; line-height: 1.22; overflow-wrap: anywhere; }
 .speech small { font-size: 20px; line-height: 1.2; text-align: right; }
-.topline { position: absolute; top: 44px; left: 32px; right: 32px; display: flex; align-items: center; justify-content: flex-end; gap: 20px; z-index: 1; }
-.review-counter { position: relative; width: 190px; flex: 0 0 190px; color: #233c56; font-size: 42px; line-height: 1; text-align: center; }
-.review-counter img { display: block; width: 100%; height: auto; }
-/* 1011×477 PNG: cream text area between ornaments, x≈278–783 / y≈198–351. */
-.review-counter span { position: absolute; left: 27.5%; top: 41.5%; width: 50%; height: 32%; display: flex; align-items: center; justify-content: center; }
 .review-content { position: absolute; inset: 0; }
-.paper { position: absolute; width: 840px; height: 1170px; top: 85px; left: 12px; }
-.paper-frame { width: 100%; height: 100%; object-fit: contain; object-position: center; position: absolute; inset: 0; }
-/* object-fit: contain draws the 849×1302 frame at about 763×1170, centered in .paper. */
-.report-viewport { position: absolute; inset: 370px 160px max(235px, calc(1279px - var(--choices-top))); overflow: hidden; }
-.paper-content { width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 0 8px 24px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 27px; line-height: 1.5; overflow-wrap: anywhere; overscroll-behavior: contain; }
-.paper h2 { font-size: 35px; line-height: 1.3; text-align: center; margin-bottom: 14px; overflow-wrap: anywhere; }
-.paper h3 { font-size: 29px; line-height: 1.4; margin: 16px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
+.paper { position: absolute; width: 520px; height: calc(var(--choices-top) - 500px); top: 320px; left: 172px; }
+.report-viewport { position: absolute; inset: 0; overflow: hidden; }
+.paper-content { width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 12px 16px 24px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 25px; line-height: 1.4; overflow-wrap: anywhere; overscroll-behavior: contain; }
+.paper h2 { font-size: 33px; line-height: 1.3; text-align: center; margin-bottom: 14px; overflow-wrap: anywhere; }
+.paper h3 { font-size: 27px; line-height: 1.4; margin: 16px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
 .paper .id { font-size: 21px; line-height: 1.3; text-align: center; margin-bottom: 12px; }
 .paper p { white-space: pre-line; }
-.mini { position: absolute; top: 530px; width: 300px; height: 460.1px; padding: 0; font-size: 24px; line-height: 1.6; background: url("frame_20261025170920.png") center / contain no-repeat; border: 0; box-shadow: none; overflow: hidden; overflow-wrap: anywhere; image-rendering: pixelated; }
-.mini.left { left: -168px; }
-.mini.right { right: -168px; }
-.mini-copy { position: absolute; top: 115px; width: 95px; display: grid; gap: 14px; text-align: left; }
-.mini.left .mini-copy { right: 35px; }
-.mini.right .mini-copy { left: 45px; }
-.mini-copy small { font-size: 20px; }
-.mini-copy .mini-info { font-size: 20px; max-height: 115px; overflow: hidden; }
+.mini { position: absolute; top: 500px; width: 150px; height: 410px; padding: 8px; font-size: 20px; line-height: 1.45; background: #f8f7e9e8; border: 2px solid #65859b; box-shadow: none; overflow: hidden; overflow-wrap: anywhere; image-rendering: pixelated; }
+.mini.left { left: 14px; }
+.mini.right { right: 14px; }
+.mini-copy { width: 100%; display: grid; gap: 12px; text-align: center; }
+.mini-copy small { font-size: 18px; }
+.mini-copy .mini-info { font-size: 17px; max-height: 170px; overflow: hidden; }
 .mini:hover:not(:disabled) { background-color: #e0f9fb88; }
 .arrow { position: absolute; top: calc(var(--choices-top) - 132px); min-width: 104px; min-height: 104px; padding: 16px 30px; font-size: 46px; }
 .arrow.left { left: 32px; }
 .arrow.right { right: 32px; }
-.choices { position: absolute; top: var(--choices-top); left: 22px; width: 820px; height: 310px; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 32px 52px; background: url("無題38_20261025004445.png") center / 100% auto no-repeat; }
-.choices h2 { color: #f8f7e9; text-align: center; font-size: 32px; line-height: 1.35; margin-bottom: 0; text-shadow: 2px 2px #102943; }
+.choices { position: absolute; top: var(--choices-top); left: 22px; width: 820px; height: 310px; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 32px 52px; }
+.choices h2 { color: #233c56; text-align: center; font-size: 30px; line-height: 1.35; margin-bottom: 0; }
 .choice-row { display: flex; gap: 12px; }
-.choice-row button { flex: 1; min-width: 0; min-height: 120px; padding: 8px 5px; color: #f8f7e9; font-size: 28px; line-height: 1.25; border: 3px solid #d5ae62; border-radius: 0; background: #142d4ee8; box-shadow: none; overflow-wrap: anywhere; }
-.choice-row button[aria-current="true"] { color: #233c56; border-color: #f3d27e; background: #fff4ce; }
-.review .angel { width: 520px; top: 60px; left: 172px; bottom: auto; z-index: 2; }
+.choice-row button { flex: 1; min-width: 0; min-height: 120px; padding: 8px 5px; color: #233c56; font-size: 26px; line-height: 1.25; border: 3px solid #65859b; border-radius: 0; background: #f8f7e9ed; box-shadow: none; overflow-wrap: anywhere; }
+.choice-row button[aria-current="true"] { border-color: #a87720; background: #fff4ce; }
 .result-dialogue { position: absolute; top: 202px; left: 162px; width: 540px; height: 112px; padding: 8px 16px; display: grid; place-items: center; background: #f5f3ed; color: #233c56; text-align: center; white-space: pre-line; overflow-wrap: anywhere; font-size: 30px; line-height: 1.25; z-index: 2; }
 .result-panel { position: absolute; top: 760px; left: 157px; width: 550px; min-height: 350px; padding: 26px 24px; background: #a3bad7; color: #f8f7e9; text-align: center; }
 .result-panel h2 { font-size: 38px; line-height: 1.3; }
@@ -74,10 +63,11 @@ img { image-rendering: pixelated; pointer-events: none; }
 .destination p { grid-column: 2; }
 .proceed { width: 100%; margin-top: 14px; padding: 10px; color: #233c56; font-size: 28px; line-height: 1.3; }
 .complete-message { position: absolute; left: 72px; top: 550px; width: 720px; padding: 65px 25px; background: #f8f7e9ed; border: 5px double #527088; font-size: 36px; text-align: center; }
-dialog { position: fixed; left: 50%; top: 50%; right: auto; bottom: auto; width: 730px; max-width: none; max-height: none; margin: 0; padding: 65px 36px; transform: translate(-50%, -50%) scale(var(--scale, .4)); transform-origin: center; background: #f8f7e9; color: #233c56; border: 7px double #527088; box-shadow: 12px 12px 0 #233c5655; }
-dialog::backdrop { background: #1731499c; }
-dialog h2 { font-size: 34px; text-align: center; line-height: 1.8; overflow-wrap: anywhere; }
-.dialog-actions { display: flex; justify-content: center; gap: 30px; margin-top: 45px; }
+dialog { position: fixed; left: 50%; top: 50%; right: auto; bottom: auto; width: 864px; height: 1536px; max-width: none; max-height: none; margin: 0; padding: 0; transform: translate(-50%, -50%) scale(var(--scale, .4)); transform-origin: center; background: url("無題50_20261025211001.png") center / 100% 100% no-repeat; color: #233c56; border: 0; box-shadow: none; overflow: hidden; }
+dialog::backdrop { background: transparent; }
+dialog h2 { position: absolute; top: 700px; left: 132px; width: 600px; font-size: 34px; text-align: center; line-height: 1.6; overflow-wrap: anywhere; }
+.dialog-actions { position: absolute; top: 850px; left: 120px; width: 624px; display: flex; justify-content: center; gap: 30px; margin: 0; }
+.dialog-actions button { flex: 1; min-width: 0; padding: 12px 8px; font-size: 27px; }
 #notice { position: fixed; left: 8px; right: 8px; bottom: 2px; margin: auto; max-width: 900px; font: 12px/1.4 sans-serif; background: #fff4cf; color: #513b16; text-align: center; z-index: 20; }
 #notice:empty { display: none; }
 .loading { position: absolute; top: 600px; left: 80px; right: 80px; padding: 40px; background: #fff9e9; font-family: system-ui, sans-serif; font-size: 30px; text-align: center; }
