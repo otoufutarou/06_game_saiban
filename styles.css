@@ -36,18 +36,18 @@ img { image-rendering: pixelated; pointer-events: none; }
 .topline { position: absolute; top: 44px; left: 50px; right: 50px; display: flex; align-items: center; justify-content: space-between; font-size: 30px; }
 .topline h1 { font-size: 36px; }
 .review-content { position: absolute; inset: 0; }
-.paper { position: absolute; width: 720px; height: 1030px; top: 215px; left: 72px; }
+.paper { position: absolute; width: 760px; height: 1070px; top: 178px; left: 52px; }
 .paper-frame { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; }
-.paper-content { position: absolute; inset: 220px 76px 175px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 28px; line-height: 1.45; overflow-wrap: anywhere; overscroll-behavior: contain; }
+.paper-content { position: absolute; inset: 210px 70px 155px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 28px; line-height: 1.45; overflow-wrap: anywhere; overscroll-behavior: contain; }
 .paper h2 { font-size: 36px; line-height: 1.3; text-align: center; margin-bottom: 16px; overflow-wrap: anywhere; }
 .paper h3 { font-size: 30px; line-height: 1.35; margin: 18px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
 .paper .id { font-size: 22px; line-height: 1.3; text-align: center; margin-bottom: 13px; }
 .paper p { white-space: pre-line; }
-.mini { position: absolute; top: 530px; width: 300px; height: 460.1px; padding: 0; font-size: 24px; line-height: 1.6; background: url("frame_20261025123011.png") center / contain no-repeat; border: 0; box-shadow: none; overflow: hidden; overflow-wrap: anywhere; image-rendering: pixelated; }
-.mini.left { left: -158px; }
-.mini.right { right: -158px; }
+.mini { position: absolute; top: 530px; width: 300px; height: 460.1px; padding: 0; font-size: 24px; line-height: 1.6; background: url("frame_20261025170920.png") center / contain no-repeat; border: 0; box-shadow: none; overflow: hidden; overflow-wrap: anywhere; image-rendering: pixelated; }
+.mini.left { left: -168px; }
+.mini.right { right: -168px; }
 .mini-copy { position: absolute; top: 115px; width: 95px; display: grid; gap: 14px; text-align: left; }
-.mini.left .mini-copy { right: 45px; }
+.mini.left .mini-copy { right: 35px; }
 .mini.right .mini-copy { left: 45px; }
 .mini-copy small { font-size: 20px; }
 .mini-copy .mini-info { font-size: 20px; max-height: 115px; overflow: hidden; }
@@ -60,7 +60,7 @@ img { image-rendering: pixelated; pointer-events: none; }
 .choice-row { display: flex; gap: 10px; }
 .choice-row button { flex: 1; min-width: 0; min-height: 104px; padding: 8px 5px; color: #f8f7e9; font-size: 28px; line-height: 1.25; border: 3px solid #d5ae62; border-radius: 0; background: #142d4ee8; box-shadow: none; overflow-wrap: anywhere; }
 .choice-row button[aria-current="true"] { color: #233c56; border-color: #f3d27e; background: #fff4ce; }
-.review .angel { width: 470px; top: 100px; left: 197px; bottom: auto; }
+.review .angel { width: 490px; top: 100px; left: 187px; bottom: auto; }
 .result-dialogue { position: absolute; top: 202px; left: 162px; width: 540px; height: 112px; padding: 8px 16px; display: grid; place-items: center; background: #f5f3ed; color: #233c56; text-align: center; white-space: pre-line; overflow-wrap: anywhere; font-size: 30px; line-height: 1.25; z-index: 2; }
 .result-panel { position: absolute; top: 760px; left: 157px; width: 550px; min-height: 350px; padding: 26px 24px; background: #a3bad7; color: #f8f7e9; text-align: center; }
 .result-panel h2 { font-size: 38px; line-height: 1.3; }

@@ -238,7 +238,7 @@
     const person = characters.get(GROUPS[state.review][state.candidate]);
     const outer = element("article", "paper");
     const image = element("img", "paper-frame");
-    image.src = "frame_20261025123011.png";
+    image.src = "frame_20261025170920.png";
     image.alt = "";
     const content = element("div", "paper-content");
     content.tabIndex = 0;
