@@ -55,7 +55,7 @@ img { image-rendering: pixelated; pointer-events: none; }
 .mini-copy small { font-size: 20px; }
 .mini-copy .mini-info { font-size: 20px; max-height: 115px; overflow: hidden; }
 .mini:hover:not(:disabled) { background-color: #e0f9fb88; }
-.arrow { position: absolute; top: 1110px; padding: 14px 24px; font-size: 46px; }
+.arrow { position: absolute; top: 1106px; padding: 16px 30px; font-size: 46px; }
 .arrow.left { left: 32px; }
 .arrow.right { right: 32px; }
 .choices { position: absolute; top: calc(1220px - var(--vertical-crop, 0px)); left: 22px; width: 820px; height: 310px; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 32px 52px; background: url("無題38_20261025004445.png") center / 100% auto no-repeat; }
