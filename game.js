@@ -307,6 +307,7 @@
     if (scrollSaveFrame !== null) cancelAnimationFrame(scrollSaveFrame);
     scrollSaveFrame = null;
     state.candidate = index;
+    state.scrolls[GROUPS[state.review][index]] = 0;
     save();
     scene.querySelector(".review-content").replaceWith(reviewContent());
     scene.querySelectorAll(".choice-row button").forEach((choice, choiceIndex) => {
