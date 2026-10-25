@@ -4,13 +4,20 @@
   const SAVE_KEY = "tengoku-shinsa-v1";
   const GROUPS = [["08", "01", "06"], ["07", "03", "12"], ["11", "02", "05"], ["10", "04", "13"], ["14", "09", "15"]];
   const WELCOME = "死者審査所 人間部門\n報告書審査部 審査課\nへようこそ";
+  const TYPEWRITER_INTERVAL_MS = 50;
+  const FIRST_RESULT_DIALOGUE = "想像以上に見込みがあります。\nこのまま最後までやってしまいましょう";
+  const RANDOM_RESULT_DIALOGUES = [
+    "ガンガン行きましょう",
+    "新人さんは有能ですね",
+    "仕事って面倒ですよねえ",
+    "私は155年間この仕事をしているんです…"
+  ];
   const TUTORIAL = [
     "トレーナーの ベガ です\nさっそくですがあなたには、\n天国行きの審査を行ってもらいます",
     "次の3人のうちから\n1人 天国行きを選んでください",
     "いきなりすぎる？\n天上界公務員試験を突破したあなたなら\nきっと大丈夫です",
     "それでは早速お願いします！"
   ];
-  const RESULT = "想像以上に見込みがあります。\nこのまま最後までやってしまいましょう";
   const DATA_ERROR = "報告書の読み込みに失敗しました。HTTPサーバーで起動し、データファイルを確認してください。";
   const scene = document.querySelector("#scene");
   const game = document.querySelector("#game");
@@ -18,6 +25,7 @@
   const transitionDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 100;
   const notices = new Set();
   let characters = new Map(), state, saved = null, busy = false, pending = null, returnFocus = null, scrollSaveFrame = null;
+  let tutorialTimer = null, tutorialSegments = [], tutorialIndex = 0, tutorialText = "", tutorialContent = null, tutorialActionReadyAt = 0;
 
   function notice(message) {
     notices.add(message);
@@ -36,7 +44,12 @@
     return node;
   }
   function freshState() {
-    return { schemaVersion: 1, screen: "tutorial", tutorialStep: 0, review: 0, candidate: 1, scrolls: {}, choices: Array(5).fill(null) };
+    return { schemaVersion: 1, screen: "tutorial", tutorialStep: 0, review: 0, candidate: 1, scrolls: {}, choices: Array(5).fill(null), resultDialogues: Array(5).fill(null) };
+  }
+  function resultDialogueFor(review, previous) {
+    if (review === 0) return FIRST_RESULT_DIALOGUE;
+    const choices = RANDOM_RESULT_DIALOGUES.filter(dialogue => dialogue !== previous);
+    return choices[Math.floor(Math.random() * choices.length)];
   }
   function validSave(value) {
     if (!value || value.schemaVersion !== 1 || !["tutorial", "review", "detail", "result", "complete"].includes(value.screen)) return false;
@@ -47,6 +60,13 @@
         !value.choices.every((id, i) => id === null || GROUPS[i].includes(id))) return false;
     const committed = value.screen === "result" || value.screen === "complete";
     if (!value.choices.every((id, i) => (i < value.review || (i === value.review && committed)) ? id !== null : id === null)) return false;
+    if (value.resultDialogues !== undefined &&
+        (!Array.isArray(value.resultDialogues) || value.resultDialogues.length !== 5 ||
+         !value.resultDialogues.every((line, i) => {
+           const completed = i < value.review || (i === value.review && committed);
+           const validLine = line === null || line === FIRST_RESULT_DIALOGUE || RANDOM_RESULT_DIALOGUES.includes(line);
+           return validLine && (completed ? line !== null : line === null);
+         }))) return false;
     if (value.screen === "tutorial" && (value.review !== 0 || value.choices.some(Boolean))) return false;
     if (value.screen === "complete" && value.review !== 4) return false;
     if (!value.scrolls || typeof value.scrolls !== "object" || Array.isArray(value.scrolls)) return false;
@@ -59,6 +79,18 @@
       const parsed = JSON.parse(raw);
       if (!validSave(parsed)) throw new Error("invalid save");
       if (parsed.screen === "detail") parsed.screen = "review";
+      if (!Array.isArray(parsed.resultDialogues)) parsed.resultDialogues = Array(5).fill(null);
+      let migrated = false;
+      for (let i = 0; i < 5; i++) {
+        const completed = i < parsed.review || ((parsed.screen === "result" || parsed.screen === "complete") && i === parsed.review);
+        if (completed && parsed.resultDialogues[i] === null) {
+          parsed.resultDialogues[i] = resultDialogueFor(i, parsed.resultDialogues[i - 1]);
+          migrated = true;
+        }
+      }
+      if (migrated) {
+        try { localStorage.setItem(SAVE_KEY, JSON.stringify(parsed)); } catch { /* Existing progress remains usable in memory. */ }
+      }
       saved = parsed;
     } catch {
       saved = null;
@@ -122,22 +154,72 @@
     scene.append(node);
   }
   function title() {
-    const mark = element("header", "title-mark");
-    mark.append(element("h1", "", "天国審査"), element("p", "", "死者審査所 人間部門"));
+    titleMark();
     const menu = element("nav", "menu");
     menu.setAttribute("aria-label", "タイトルメニュー");
-    menu.append(button("はじめから", () => {
+    menu.append(button("▶ はじめから", () => {
       if (saved) openConfirmation("保存データを上書きして\nはじめから始めますか？", () => startNew());
       else startNew();
     }));
     const resume = button("つづきから", () => change(() => { state = structuredClone(saved); }));
     resume.disabled = !saved;
     menu.append(resume);
-    scene.append(mark, menu);
+    scene.append(menu);
     speech(WELCOME);
   }
+  function titleMark() {
+    const mark = element("header", "title-mark");
+    mark.append(element("h1", "", "天国審査"), element("p", "", "死者審査所 人間部門"));
+    scene.append(mark);
+  }
   function startNew() {
-    change(() => { state = freshState(); save(); });
+    state = freshState();
+    save();
+    render();
+  }
+  function stopTutorialTyping() {
+    if (tutorialTimer !== null) window.clearInterval(tutorialTimer);
+    tutorialTimer = null;
+  }
+  function typeTutorialLine() {
+    stopTutorialTyping();
+    tutorialText = TUTORIAL[state.tutorialStep];
+    tutorialSegments = typeof Intl.Segmenter === "function"
+      ? [...new Intl.Segmenter("ja", { granularity: "grapheme" }).segment(tutorialText)].map(part => part.segment)
+      : Array.from(tutorialText);
+    tutorialIndex = 0;
+    tutorialContent.textContent = "";
+    const writeNext = () => {
+      tutorialIndex++;
+      tutorialContent.textContent = tutorialSegments.slice(0, tutorialIndex).join("");
+      if (tutorialIndex >= tutorialSegments.length) stopTutorialTyping();
+    };
+    if (tutorialSegments.length) {
+      writeNext();
+      if (tutorialIndex < tutorialSegments.length) tutorialTimer = window.setInterval(writeNext, TYPEWRITER_INTERVAL_MS);
+    }
+  }
+  function advanceTutorial() {
+    if (Date.now() < tutorialActionReadyAt) return;
+    tutorialActionReadyAt = Date.now() + 250;
+    if (tutorialTimer !== null) {
+      window.clearInterval(tutorialTimer);
+      tutorialTimer = null;
+      tutorialIndex = tutorialSegments.length;
+      tutorialContent.textContent = tutorialText;
+      return;
+    }
+    if (tutorialIndex < tutorialSegments.length) return;
+    if (state.tutorialStep < TUTORIAL.length - 1) {
+      state.tutorialStep++;
+      save();
+      typeTutorialLine();
+      return;
+    }
+    change(() => {
+      state.screen = "review";
+      save();
+    });
   }
   function topLine() {
     const top = element("header", "topline");
@@ -245,6 +327,7 @@
   }
   document.querySelector("#confirm-no").addEventListener("click", closeConfirmation);
   dialog.addEventListener("cancel", event => { event.preventDefault(); closeConfirmation(); });
+  document.querySelector("#confirm-yes").textContent = "▶ はい";
   document.querySelector("#confirm-yes").addEventListener("click", () => {
     if (!pending || busy) return;
     const action = pending;
@@ -255,28 +338,30 @@
     if (busy || state.screen !== "review" || state.choices[state.review] !== null || !GROUPS[state.review].includes(id)) return;
     capturePaperScroll();
     state.choices[state.review] = id;
+    state.resultDialogues[state.review] = resultDialogueFor(state.review, state.resultDialogues[state.review - 1]);
     state.screen = "result";
     save();
     change(() => {});
   }
   function result() {
     const panel = element("section", "result-panel");
-    panel.append(element("h2", "", `第${state.review + 1}回 審査結果`), element("p", "result-dialogue", RESULT));
+    panel.append(element("h2", "", `第${state.review + 1}回 審査結果`));
     const chosen = state.choices[state.review];
-    const heaven = element("p", "destination");
-    heaven.append(element("strong", "", "天国"), element("span", "", characters.get(chosen).name));
+    panel.append(element("p", "destination", `${characters.get(chosen).name}を天国に送りました`));
     const hell = element("div", "destination hell");
     hell.append(element("strong", "", "地獄"));
     for (const id of GROUPS[state.review].filter(id => id !== chosen)) hell.append(element("p", "", characters.get(id).name));
-    panel.append(heaven, hell);
-    scene.append(panel);
-    scene.append(button(state.review === 4 ? "審判を終える" : "次の審査へ進む", () => change(() => {
+    panel.append(hell);
+    panel.append(button(state.review === 4 ? "▶ 審判を終える" : "▶ 次の審査へ進む", () => change(() => {
       if (state.review === 4) state.screen = "complete";
       else { state.review++; state.candidate = 1; state.screen = "review"; }
       save();
     }), "proceed"));
+    scene.append(element("p", "result-dialogue", state.resultDialogues[state.review]));
+    scene.append(panel);
   }
   function render() {
+    stopTutorialTyping();
     const fading = scene.classList.contains("fading");
     scene.replaceChildren();
     scene.className = state?.screen || "title";
@@ -284,11 +369,12 @@
     if (!state) { title(); return; }
     switch (state.screen) {
       case "tutorial":
-        speech(TUTORIAL[state.tutorialStep], () => change(() => {
-          if (state.tutorialStep < 3) state.tutorialStep++;
-          else state.screen = "review";
-          save();
-        }), "タップ / Enter で次へ ▼");
+        titleMark();
+        const tutorialSpeech = button("", advanceTutorial, "speech");
+        tutorialContent = element("p");
+        tutorialSpeech.append(tutorialContent, element("small", "", "タップ / Enter で次へ ▼"));
+        scene.append(tutorialSpeech);
+        typeTutorialLine();
         break;
       case "review": review(); break;
       case "result": result(); break;
@@ -350,8 +436,8 @@
         }
         return false;
       });
-      const text = JSON.stringify(data) + WELCOME + TUTORIAL.join("") + RESULT +
-        "天国審査死者審査所人間部門はじめからつづき第回全報告書基本情報死因家族構成天国地獄審査結果次の進む審判を終える終了しました保存データ上書き始めますか送はい考え直す上下にスクロールできます選んでください ID0123456789/←→▼？";
+      const text = JSON.stringify(data) + WELCOME + TUTORIAL.join("") + FIRST_RESULT_DIALOGUE + RANDOM_RESULT_DIALOGUES.join("") +
+        "天国審査死者審査所人間部門はじめからつづき第回全報告書基本情報死因家族構成天国地獄審査結果次の進む審判を終える終了しました保存データ上書き始めますか送はい考え直す上下にスクロールできます選んでください ID0123456789/←→▼▶？";
       const missing = [...new Set([...text].filter(char => !/\s/.test(char) && !hasGlyph(char.codePointAt(0))))];
       if (missing.length) {
         const sample = missing.slice(0, 20).join("") + (missing.length > 20 ? ` ほか${missing.length - 20}文字` : "");
