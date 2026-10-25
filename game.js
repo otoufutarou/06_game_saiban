@@ -238,7 +238,7 @@
     const person = characters.get(GROUPS[state.review][state.candidate]);
     const outer = element("article", "paper");
     const image = element("img", "paper-frame");
-    image.src = "frame_20261025123011.png";
+    image.src = "frame_20261025170920.png";
     image.alt = "";
     const content = element("div", "paper-content");
     content.tabIndex = 0;
@@ -270,7 +270,7 @@
       copy.append(element("small", "", `ID ${person.id}`), element("span", "", person.name), element("span", "mini-info", person.basicInfo));
       mini.append(copy);
       mini.setAttribute("aria-label", `${label} ${person.name}の報告書`);
-      cards.push(mini, button(side === "left" ? "←" : "→", () => select(index), `arrow ${side}`));
+      cards.push(mini, button(side === "left" ? "◀︎" : "▶︎", () => select(index), `arrow ${side}`));
       cards[cards.length - 1].setAttribute("aria-label", label);
     }
     return cards;
