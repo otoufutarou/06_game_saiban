@@ -37,7 +37,7 @@ img { image-rendering: pixelated; pointer-events: none; }
 .review-counter img { display: block; width: 100%; height: auto; }
 /* 1011×477 PNG: cream text area between ornaments, x≈278–783 / y≈198–351. */
 .review-counter span { position: absolute; left: 27.5%; top: 41.5%; width: 50%; height: 32%; display: flex; align-items: center; justify-content: center; }
-.review-content { position: absolute; inset: 0; }
+.review-content { position: absolute; inset: 0; z-index: 0; }
 .paper { position: absolute; width: 840px; height: 1170px; top: 85px; left: 12px; }
 .paper-frame { width: 100%; height: 100%; object-fit: contain; object-position: center; position: absolute; inset: 0; }
 /* object-fit: contain draws the 849×1302 frame at about 763×1170, centered in .paper. */
@@ -64,7 +64,7 @@ img { image-rendering: pixelated; pointer-events: none; }
 .choice-row { display: flex; gap: 12px; }
 .choice-row button { flex: 1; min-width: 0; min-height: 120px; padding: 8px 5px; color: #f8f7e9; font-size: 28px; line-height: 1.25; border: 3px solid #d5ae62; border-radius: 0; background: #142d4ee8; box-shadow: none; overflow-wrap: anywhere; }
 .choice-row button[aria-current="true"] { color: #233c56; border-color: #f3d27e; background: #fff4ce; }
-.review .angel { width: 520px; top: 60px; left: 172px; bottom: auto; z-index: 2; }
+.review .angel { width: 520px; top: -100px; left: 172px; bottom: auto; z-index: 2; }
 .result-dialogue { position: absolute; top: 202px; left: 162px; width: 540px; height: 112px; padding: 8px 16px; display: grid; place-items: center; background: #f5f3ed; color: #233c56; text-align: center; white-space: pre-line; overflow-wrap: anywhere; font-size: 30px; line-height: 1.25; z-index: 2; }
 .result-panel { position: absolute; top: 760px; left: 157px; width: 550px; min-height: 350px; padding: 26px 24px; background: #a3bad7; color: #f8f7e9; text-align: center; }
 .result-panel h2 { font-size: 38px; line-height: 1.3; }
