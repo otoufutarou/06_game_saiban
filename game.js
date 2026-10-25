@@ -270,7 +270,7 @@
       copy.append(element("small", "", `ID ${person.id}`), element("span", "", person.name), element("span", "mini-info", person.basicInfo));
       mini.append(copy);
       mini.setAttribute("aria-label", `${label} ${person.name}の報告書`);
-      cards.push(mini, button(side === "left" ? "←" : "→", () => select(index), `arrow ${side}`));
+      cards.push(mini, button(side === "left" ? "◀︎" : "▶︎", () => select(index), `arrow ${side}`));
       cards[cards.length - 1].setAttribute("aria-label", label);
     }
     return cards;

@@ -5,8 +5,7 @@
 }
 :root { color-scheme: light; font-family: "KH Dot Kabutochou 16"; color: #233c56; }
 * { box-sizing: border-box; }
-html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
-body { background: #1c3448; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #b0c4de; }
 #viewport { position: fixed; inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); display: grid; place-items: center; }
 #game { width: 864px; height: 1536px; position: absolute; overflow: hidden; transform: scale(var(--scale, .4)); transform-origin: center; background: #d8f3f5 url("haikei_20261025004349.png") center / 100% 100% no-repeat; image-rendering: pixelated; }
 button { font: inherit; cursor: pointer; color: inherit; border: 3px solid #45627b; border-radius: 4px; background: #f8f7e9; padding: 15px 24px; line-height: 1.5; font-size: 28px; box-shadow: 0 5px 0 #8196a4; }
