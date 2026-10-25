@@ -144,7 +144,6 @@
     resume.disabled = !saved;
     menu.append(resume);
     scene.append(mark, menu);
-    angel();
     speech(WELCOME);
   }
   function startNew() {
@@ -256,9 +255,8 @@
     change(() => {});
   }
   function result() {
-    topLine();
     const panel = element("section", "result-panel");
-    panel.append(element("h2", "", "審査結果"));
+    panel.append(element("h2", "", `第${state.review + 1}回 審査結果`), element("p", "result-dialogue", RESULT));
     const chosen = state.choices[state.review];
     const heaven = element("p", "destination");
     heaven.append(element("strong", "", "天国"), element("span", "", characters.get(chosen).name));
@@ -272,8 +270,6 @@
       else { state.review++; state.candidate = 1; state.screen = "review"; }
       save();
     }), "proceed"));
-    angel();
-    speech(RESULT);
   }
   function render() {
     scene.replaceChildren();
@@ -281,7 +277,6 @@
     if (!state) { title(); return; }
     switch (state.screen) {
       case "tutorial":
-        angel();
         speech(TUTORIAL[state.tutorialStep], () => change(() => {
           if (state.tutorialStep < 3) state.tutorialStep++;
           else state.screen = "review";

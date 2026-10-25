@@ -17,18 +17,19 @@ button:focus-visible, [tabindex]:focus-visible { outline: 6px solid #d58c28; out
 h1, h2, h3, p { margin: 0; font-weight: normal; }
 img { image-rendering: pixelated; pointer-events: none; }
 #scene { position: absolute; inset: 0; }
-.title, .tutorial, .complete { background: #e4f7f8; }
-.result { background: #d2f0f2; }
+.title, .tutorial { background: url("無題36_20261025003433.png") center / contain no-repeat; }
+.complete { background: #e4f7f8; }
+.result { background: url("kakuningamen_20261025003755.png") center / contain no-repeat; }
 .angel { position: absolute; left: 72px; bottom: 570px; width: 720px; height: auto; z-index: 2; }
-.title-mark { position: absolute; top: 175px; left: 100px; width: 664px; text-align: center; padding: 42px 0; background: #f8f7e9eb; border: 5px double #59758a; box-shadow: 9px 9px 0 #99bdc3; }
-.title-mark h1 { font-size: 88px; letter-spacing: 12px; }
-.title-mark p { font-size: 26px; margin-top: 22px; }
-.menu { position: absolute; top: 916px; left: 197px; width: 470px; display: grid; gap: 26px; z-index: 3; }
-.menu button { font-size: 38px; padding: 18px; }
-.speech { position: absolute; left: 0; bottom: 18px; width: 864px; height: 346px; border: 0; padding: 65px 150px 90px; background: url("無題40_20261025122016.png") center / 134% auto no-repeat; box-shadow: none; text-align: left; z-index: 4; display: flex; flex-direction: column; justify-content: center; image-rendering: pixelated; }
-.speech:hover:not(:disabled) { background-color: transparent; }
-.speech p { white-space: pre-line; font-size: 28px; line-height: 1.5; overflow-wrap: anywhere; }
-.speech small { font-size: 20px; text-align: right; margin-top: 12px; }
+.title-mark { position: absolute; top: 1030px; left: 190px; width: 484px; text-align: center; }
+.title-mark h1 { font-size: 52px; line-height: 1.15; letter-spacing: 8px; }
+.title-mark p { font-size: 22px; margin-top: 8px; }
+.menu { position: absolute; top: 1145px; left: 200px; width: 464px; display: flex; gap: 22px; }
+.menu button { flex: 1; font-size: 28px; padding: 8px; }
+.speech { position: absolute; left: 195px; top: 405px; width: 474px; height: 130px; border: 0; padding: 0; background: transparent; box-shadow: none; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+.speech:hover:not(:disabled), .speech:active:not(:disabled) { background: transparent; box-shadow: none; transform: none; }
+.speech p { white-space: pre-line; font-size: 23px; line-height: 1.35; }
+.speech small { font-size: 16px; text-align: right; margin-top: 4px; }
 .topline { position: absolute; top: 44px; left: 50px; right: 50px; display: flex; align-items: center; justify-content: space-between; font-size: 30px; }
 .topline h1 { font-size: 36px; }
 .paper { position: absolute; width: 570px; height: 874px; top: 320px; left: 147px; }
@@ -61,15 +62,13 @@ img { image-rendering: pixelated; pointer-events: none; }
 .detail .paper-content { inset: 235px 112px 136px; font-size: 28px; }
 .close-detail { position: absolute; top: 1380px; left: 282px; width: 300px; z-index: 5; }
 .detail-guide { position: absolute; top: 1480px; left: 80px; right: 80px; text-align: center; font-size: 24px; background: #f7f5e9e8; padding: 8px; }
-.result .speech { top: 55px; bottom: auto; }
-.result .angel { width: 430px; top: 420px; left: 217px; bottom: auto; }
-.result .topline { top: 24px; }
-.result-panel { position: absolute; top: 805px; left: 90px; width: 684px; padding: 28px 45px; background: #f8fdf7ed; border: 6px double #729ba5; text-align: center; }
-.result-panel h2 { font-size: 36px; margin-bottom: 22px; }
-.destination { font-size: 30px; line-height: 1.6; margin: 14px 0; overflow-wrap: anywhere; }
-.destination strong { display: block; font-weight: normal; color: #557b8d; font-size: 34px; }
-.destination.hell strong { color: #846066; }
-.proceed { position: absolute; left: 182px; top: 1380px; width: 500px; z-index: 3; }
+.result-panel { position: absolute; top: 748px; left: 177px; width: 510px; text-align: center; }
+.result-panel h2 { font-size: 30px; line-height: 40px; }
+.result-dialogue { white-space: pre-line; font-size: 22px; line-height: 32px; margin: 8px 0 12px; }
+.destination { display: grid; grid-template-columns: 90px 1fr; font-size: 30px; line-height: 38px; margin-top: 8px; }
+.destination strong { grid-column: 1; grid-row: 1 / span 2; font-weight: normal; }
+.destination span, .destination p { grid-column: 2; }
+.proceed { position: absolute; left: 257px; top: 1036px; width: 350px; font-size: 26px; padding: 10px; }
 .complete-message { position: absolute; left: 72px; top: 550px; width: 720px; padding: 65px 25px; background: #f8f7e9ed; border: 5px double #527088; font-size: 36px; text-align: center; }
 dialog { position: fixed; left: 50%; top: 50%; right: auto; bottom: auto; width: 730px; max-width: none; max-height: none; margin: 0; padding: 65px 36px; transform: translate(-50%, -50%) scale(var(--scale, .4)); transform-origin: center; background: #f8f7e9; color: #233c56; border: 7px double #527088; box-shadow: 12px 12px 0 #233c5655; }
 dialog::backdrop { background: #1731499c; }
