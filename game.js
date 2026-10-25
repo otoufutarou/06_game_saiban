@@ -244,7 +244,7 @@
     plate.src = "無題42_20261025183115.png";
     plate.alt = "";
     counter.append(plate, element("span", "", `${state.review + 1}/5`));
-    top.append(element("h1", "", "報告書審査"), counter);
+    top.append(counter);
     scene.append(top);
   }
   function capturePaperScroll() {
