@@ -27,7 +27,7 @@ img { image-rendering: pixelated; pointer-events: none; }
 .menu { position: absolute; top: 930px; left: 200px; width: 464px; display: flex; gap: 22px; }
 .menu button { flex: 1; min-width: 0; font-size: 25px; padding: 8px 4px; }
 .menu-start::before, #confirm-yes::before, .proceed::before { content: ""; display: inline-block; width: 0; height: 0; margin-right: .35em; border-top: .35em solid transparent; border-bottom: .35em solid transparent; border-left: .5em solid currentColor; vertical-align: -.05em; }
-.speech { position: absolute; left: 145px; top: 190px; width: 574px; height: 150px; border: 0; padding: 8px 16px; background: transparent; box-shadow: none; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+.speech { position: absolute; left: 100px; bottom: 48px; width: 664px; height: 178px; border: 0; padding: 8px 20px; background: transparent; box-shadow: none; color: #f8f7e9; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
 .speech:hover:not(:disabled), .speech:active:not(:disabled) { background: transparent; box-shadow: none; transform: none; }
 .speech p { white-space: pre-line; font-size: 27px; line-height: 1.22; overflow-wrap: anywhere; }
 .speech small { font-size: 20px; line-height: 1.2; text-align: right; }
