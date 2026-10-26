@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#b0c4de">
   <title>天国審査</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="game.js" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261026-2">
+  <script src="game.js?v=20261026-2" defer></script>
 </head>
 <body>
   <div id="viewport">
@@ -15,11 +15,13 @@
     </main>
   </div>
   <dialog id="confirmation" aria-labelledby="confirmation-title">
-    <h2 id="confirmation-title"></h2>
-    <div class="dialog-actions">
-      <button id="confirm-yes">はい</button>
-      <button id="confirm-no">考え直す</button>
-    </div>
+    <section class="confirmation-panel">
+      <h2 id="confirmation-title"></h2>
+      <div class="dialog-actions">
+        <button id="confirm-yes" type="button">はい</button>
+        <button id="confirm-no" type="button">いいえ</button>
+      </div>
+    </section>
   </dialog>
   <p id="notice" role="status" aria-live="polite"></p>
   <noscript>このゲームには JavaScript が必要です。</noscript>
