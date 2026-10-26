@@ -24,9 +24,10 @@ img { image-rendering: pixelated; pointer-events: none; }
 .title-mark h1 { color: #a87720; font-size: 96px; line-height: 1; letter-spacing: 20px; }
 .title-mark h1 span { display: block; }
 #scene.title .title-mark { left: 197px; width: 519px; }
-#scene.title .title-mark h1 { color: #8ea5b4; font-size: 128px; letter-spacing: 0; }
-#scene.title .title-mark .title-top-line { letter-spacing: 28px; margin-bottom: -63px; }
-#scene.title .title-mark .title-bottom-line { letter-spacing: 294px; }
+#scene.title .title-mark h1 { position: relative; height: 193px; color: #8ea5b4; font-size: 128px; letter-spacing: 0; }
+#scene.title .title-mark .title-line { position: absolute; display: block; left: 0; text-align: left; white-space: nowrap; }
+#scene.title .title-mark .title-top-line { left: 138px; top: 5px; font-size: 128px; letter-spacing: 1px; }
+#scene.title .title-mark .title-bottom-line { top: 70px; letter-spacing: 268px; }
 .menu { position: absolute; top: 1160px; left: 270px; width: 400px; display: flex; flex-direction: column; gap: 0; }
 .menu button { min-height: 56px; font-size: 36px; padding: 0; }
 .menu button, .speech, .arrow, .mini, .proceed, .dialog-actions button { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
