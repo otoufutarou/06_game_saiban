@@ -51,9 +51,9 @@ img { image-rendering: pixelated; pointer-events: none; }
 .mini-copy { width: 100%; display: grid; gap: 12px; text-align: center; }
 .mini-copy small { font-size: 26px; }
 .mini-info { display: none; }
-.arrow { position: absolute; top: 798px; width: 100px; height: 128px; padding: 0; touch-action: manipulation; }
+.arrow { position: absolute; top: 798px; width: 140px; height: 128px; padding: 0; touch-action: manipulation; }
 .arrow.left { left: 25px; }
-.arrow.right { left: 835px; }
+.arrow.right { left: 795px; }
 .choices { position: absolute; top: 1420px; left: 205px; width: 545px; height: 180px; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
 .choices h2 { color: #f8f7e9; text-align: center; font-size: 38px; line-height: 1.25; }
 .choice-row { display: flex; gap: 10px; }
