@@ -31,9 +31,9 @@ img { image-rendering: pixelated; pointer-events: none; }
 .menu button:hover:not(:disabled), .menu button:active:not(:disabled), .speech:hover:not(:disabled), .speech:active:not(:disabled), .arrow:hover:not(:disabled), .arrow:active:not(:disabled), .mini:hover:not(:disabled), .mini:active:not(:disabled), .proceed:hover:not(:disabled), .proceed:active:not(:disabled), .dialog-actions button:hover:not(:disabled), .dialog-actions button:active:not(:disabled) { background: transparent; box-shadow: none; transform: none; }
 .menu-start::before, #confirm-yes::before, .proceed::before { content: ""; display: inline-block; width: 0; height: 0; margin-right: .35em; border-top: .35em solid transparent; border-bottom: .35em solid transparent; border-left: .5em solid currentColor; vertical-align: -.05em; }
 .speech { position: absolute; left: 205px; top: 434px; width: 530px; height: 148px; padding: 0; color: #233c56; text-align: center; display: grid; place-items: center; }
-.speech p { white-space: pre-line; font-size: 32px; line-height: 1.35; overflow-wrap: anywhere; }
-.tutorial .speech p { font-size: 30px; line-height: 1.2; }
-.tutorial-hint { position: absolute; top: 1200px; left: 200px; width: 540px; font-size: 28px; text-align: center; }
+.speech p { white-space: pre-line; font-size: 36px; line-height: 1.25; overflow-wrap: anywhere; }
+.tutorial .speech p { line-height: 1; }
+.tutorial-hint { position: absolute; top: 1200px; left: 200px; width: 540px; font-size: 36px; text-align: center; }
 .review-content { position: absolute; inset: 0; }
 .paper { position: absolute; width: 630px; height: 795px; top: 420px; left: 165px; }
 .report-viewport { position: absolute; inset: 0; overflow: hidden; }
