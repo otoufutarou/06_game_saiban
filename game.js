@@ -156,7 +156,7 @@
     const menu = element("nav", "menu");
     menu.setAttribute("aria-label", "タイトルメニュー");
     const start = button("はじめから", () => {
-      if (saved) openConfirmation("保存データを上書きして\nはじめから始めますか？", () => startNew());
+      if (saved) openConfirmation("保存データを上書きして\n最初からはじめますか？", () => startNew());
       else startNew();
     }, "menu-start");
     start.setAttribute("aria-label", "▶ はじめから");
@@ -169,9 +169,7 @@
   }
   function titleMark() {
     const mark = element("header", "title-mark");
-    const heading = element("h1");
-    heading.append(element("span", "title-line title-top-line", "天国"), element("span", "title-line title-bottom-line", "審査"));
-    mark.append(heading);
+    mark.append(element("h1", "", "天国審査"));
     scene.append(mark);
   }
   function startNew() {
@@ -316,7 +314,7 @@
     pending = action;
     document.querySelector("#confirmation-title").textContent = text;
     dialog.showModal();
-    document.querySelector("#confirm-no").focus();
+    document.querySelector("#confirm-yes").focus({ preventScroll: true });
   }
   function closeConfirmation() {
     pending = null;
@@ -326,7 +324,7 @@
   }
   document.querySelector("#confirm-no").addEventListener("click", closeConfirmation);
   dialog.addEventListener("cancel", event => { event.preventDefault(); closeConfirmation(); });
-  document.querySelector("#confirm-yes").setAttribute("aria-label", "▶ はい");
+  document.querySelector("#confirm-yes").setAttribute("aria-label", "はい");
   document.querySelector("#confirm-yes").addEventListener("click", () => {
     if (!pending || busy) return;
     const action = pending;
@@ -353,7 +351,8 @@
     }), "proceed");
     proceed.setAttribute("aria-label", `▶ ${state.review === 4 ? "審判を終える" : "次の審査へすすむ"}`);
     panel.append(proceed);
-    scene.append(element("p", "result-dialogue", state.resultDialogues[state.review]));
+    const dialogueClass = state.review === 0 ? "result-dialogue first-result-dialogue" : "result-dialogue";
+    scene.append(element("p", dialogueClass, state.resultDialogues[state.review]));
     scene.append(panel);
   }
   function render() {
