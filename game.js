@@ -22,7 +22,6 @@
   const scene = document.querySelector("#scene");
   const game = document.querySelector("#game");
   const dialog = document.querySelector("#confirmation");
-  const transitionDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240;
   const notices = new Set();
   let characters = new Map(), state, saved = null, busy = false, pending = null, returnFocus = null, scrollSaveFrame = null;
   let dialogue = null;
@@ -120,9 +119,7 @@
     const [width, height] = state?.screen === "result" || state?.screen === "complete" ? [864, 1536] : [941, 1672];
     const widthScale = box.width / width;
     const heightScale = box.height / height;
-    const titleScreen = !state || state.screen === "tutorial";
-    const titleCrop = titleScreen && widthScale > heightScale && height - box.height / widthScale <= 180;
-    const scale = titleCrop ? widthScale : Math.min(widthScale, heightScale);
+    const scale = Math.max(widthScale, heightScale);
     const verticalOffset = (box.height - height * scale) / 2;
     document.documentElement.style.setProperty("--art-width", `${width}px`);
     document.documentElement.style.setProperty("--art-height", `${height}px`);
@@ -137,18 +134,15 @@
     if (busy) return;
     busy = true;
     scene.inert = true;
-    if (transitionDuration) scene.classList.add("fading");
-    window.setTimeout(() => {
+    try {
       action();
       render();
-      scene.classList.remove("fading");
-      window.setTimeout(() => {
-        busy = false;
-        scene.inert = false;
-        const target = scene.querySelector("[data-focus], h1, h2, button");
-        if (target) { if (!target.matches("button")) target.tabIndex = -1; target.focus({ preventScroll: true }); }
-      }, transitionDuration);
-    }, transitionDuration);
+    } finally {
+      busy = false;
+      scene.inert = false;
+    }
+    const target = scene.querySelector("[data-focus], h1, h2, button");
+    if (target) { if (!target.matches("button")) target.tabIndex = -1; target.focus({ preventScroll: true }); }
   }
   function speech(text, action, hint) {
     const node = action ? button("", action, "speech") : element("section", "speech");
@@ -176,7 +170,7 @@
   function titleMark() {
     const mark = element("header", "title-mark");
     const heading = element("h1");
-    heading.append(element("span", "", "天国"), element("span", "", "審査"));
+    heading.append(element("span", "title-line title-top-line", "天国"), element("span", "title-line title-bottom-line", "審査"));
     mark.append(heading);
     scene.append(mark);
   }
@@ -365,11 +359,9 @@
   function render() {
     stopDialogueTyping();
     dialogue = null;
-    const fading = scene.classList.contains("fading");
     scene.replaceChildren();
     scene.className = state?.screen || "title";
     resize();
-    if (fading) scene.classList.add("fading");
     if (!state) { title(); return; }
     switch (state.screen) {
       case "tutorial":
