@@ -19,7 +19,7 @@ img { image-rendering: pixelated; pointer-events: none; }
 #game::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle, #d8f3f5 71%, transparent 73%) 0 0 / 40px 40px; opacity: 0; transition: opacity 240ms steps(6); }
 #game:has(.fading)::after { opacity: 1; }
 .title, .tutorial { background: url("無題49_20261025213512.png") center / 100% 100% no-repeat; }
-.complete { background: #e4f7f8; }
+.complete { background: url("無題50_20261025214014.png") center / 100% 100% no-repeat; }
 .review { background: url("無題48_20261025213530.png") center / 100% 100% no-repeat; }
 .result { background: url("無題50_20261025214014.png") center / 100% 100% no-repeat; }
 .title-mark { position: absolute; top: 212px; left: 190px; width: 540px; text-align: center; }
@@ -32,39 +32,42 @@ img { image-rendering: pixelated; pointer-events: none; }
 .menu-start::before, #confirm-yes::before, .proceed::before { content: ""; display: inline-block; width: 0; height: 0; margin-right: .35em; border-top: .35em solid transparent; border-bottom: .35em solid transparent; border-left: .5em solid currentColor; vertical-align: -.05em; }
 .speech { position: absolute; left: 205px; top: 434px; width: 530px; height: 148px; padding: 0; color: #233c56; text-align: center; display: grid; place-items: center; }
 .speech p { white-space: pre-line; font-size: 32px; line-height: 1.35; overflow-wrap: anywhere; }
-.tutorial .speech p { font-size: 24px; }
+.tutorial .speech p { font-size: 30px; line-height: 1.2; }
 .tutorial-hint { position: absolute; top: 1200px; left: 200px; width: 540px; font-size: 28px; text-align: center; }
 .review-content { position: absolute; inset: 0; }
 .paper { position: absolute; width: 630px; height: 795px; top: 420px; left: 165px; }
 .report-viewport { position: absolute; inset: 0; overflow: hidden; }
-.paper-content { width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 12px 16px 24px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 25px; line-height: 1.4; overflow-wrap: anywhere; overscroll-behavior: contain; }
-.paper h2 { font-size: 33px; line-height: 1.3; text-align: center; margin-bottom: 14px; overflow-wrap: anywhere; }
-.paper h3 { font-size: 27px; line-height: 1.4; margin: 16px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
-.paper .id { font-size: 21px; line-height: 1.3; text-align: center; margin-bottom: 12px; }
+.paper-content { width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 12px 16px 24px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-y; scrollbar-color: #65859b #f1efe3; scrollbar-width: thin; font-size: 40px; line-height: 1.35; overflow-wrap: anywhere; overscroll-behavior: contain; }
+.paper h2 { font-size: 46px; line-height: 1.25; text-align: center; margin-bottom: 14px; overflow-wrap: anywhere; }
+.paper h3 { font-size: 42px; line-height: 1.3; margin: 16px 0 7px; border-bottom: 2px solid #a5a99d; overflow-wrap: anywhere; }
+.paper .id { font-size: 34px; line-height: 1.3; text-align: center; margin-bottom: 12px; }
 .paper p { white-space: pre-line; }
-.mini { position: absolute; top: 535px; width: 60px; height: 250px; padding: 0; font-size: 23px; line-height: 1.3; overflow: hidden; overflow-wrap: anywhere; }
+.mini { position: absolute; top: 535px; width: 130px; height: 250px; padding: 0; font-size: 34px; line-height: 1.3; overflow: hidden; overflow-wrap: anywhere; }
 .mini.left { left: 9px; }
 .mini.right { right: 9px; }
 .mini-copy { width: 100%; display: grid; gap: 12px; text-align: center; }
-.mini-copy small { font-size: 18px; }
+.mini-copy small { font-size: 26px; }
 .mini-info { display: none; }
 .arrow { position: absolute; top: 798px; width: 100px; height: 128px; padding: 0; touch-action: manipulation; }
 .arrow.left { left: 25px; }
 .arrow.right { left: 835px; }
-.choices { position: absolute; top: 1420px; left: 205px; width: 545px; height: 170px; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
-.choices h2 { color: #f8f7e9; text-align: center; font-size: 25px; line-height: 1.35; }
+.choices { position: absolute; top: 1420px; left: 205px; width: 545px; height: 180px; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+.choices h2 { color: #f8f7e9; text-align: center; font-size: 38px; line-height: 1.25; }
 .choice-row { display: flex; gap: 10px; }
-.choice-row button { flex: 1; min-width: 0; min-height: 95px; padding: 6px; color: #f8f7e9; font-size: 26px; line-height: 1.25; border: 2px solid #b0c4de; border-radius: 0; background: transparent; box-shadow: none; overflow-wrap: anywhere; }
+.choice-row button { flex: 1; min-width: 0; min-height: 112px; padding: 6px; color: #fff9e9; font-size: 40px; line-height: 1.15; border: 2px solid #f1ebe1; border-radius: 0; background: #173747; box-shadow: none; overflow-wrap: anywhere; }
 .choice-row button:hover:not(:disabled) { background: #233c56; }
-.result-dialogue { position: absolute; top: 208px; left: 162px; width: 540px; height: 90px; display: grid; place-items: center; color: #233c56; text-align: center; white-space: pre-line; overflow-wrap: anywhere; font-size: 28px; line-height: 1.5; }
+.result-dialogue { position: absolute; top: 208px; left: 162px; width: 540px; height: 90px; display: grid; place-items: center; color: #233c56; text-align: center; white-space: pre-line; overflow-wrap: anywhere; font-size: 36px; line-height: 1.15; }
 .result-panel { position: absolute; top: 870px; left: 157px; width: 550px; color: #233c56; text-align: center; }
-.destination { font-size: 32px; line-height: 1.35; overflow-wrap: anywhere; }
-.proceed { width: 100%; margin-top: 12px; padding: 0; min-height: 56px; color: #233c56; font-size: 32px; line-height: 1.3; }
+.destination { font-size: 36px; line-height: 1.25; overflow-wrap: anywhere; }
+.proceed { width: 100%; margin-top: 12px; padding: 0; min-height: 56px; color: #233c56; font-size: 36px; line-height: 1.2; }
 .complete-message { position: absolute; left: 72px; top: 550px; width: 720px; padding: 65px 25px; background: #f8f7e9ed; border: 5px double #527088; font-size: 36px; text-align: center; }
 dialog { position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + var(--vertical-offset, 0px)); right: auto; bottom: auto; width: var(--art-width, 941px); height: var(--art-height, 1672px); max-width: none; max-height: none; margin: 0; padding: 0; transform: translateX(-50%) scale(var(--scale, .4)); transform-origin: top center; background: transparent; color: #233c56; border: 0; box-shadow: none; overflow: hidden; }
 dialog::backdrop { background: #17374788; }
-.confirmation-panel { position: absolute; left: 145px; top: 530px; width: 650px; height: 470px; padding: 110px 28px 50px; background: #f1ebe1; border: 8px double #45627b; outline: 6px solid #e9e5d9; }
-dialog h2 { font-size: 32px; text-align: center; line-height: 1.4; overflow-wrap: anywhere; white-space: pre-line; }
+.confirmation-panel { position: absolute; left: 145px; top: 530px; width: 650px; height: 470px; padding: 110px 28px 50px; background: #f1ebe1; border: 8px solid #45627b; outline: 6px solid #e9e5d9; box-shadow: inset 0 0 0 5px #c9b78e, inset 0 0 0 10px #fff8e7; }
+.confirmation-panel::before, .confirmation-panel::after { content: ""; position: absolute; width: 28px; height: 28px; pointer-events: none; }
+.confirmation-panel::before { top: 16px; left: 16px; border-top: 5px solid #a8874b; border-left: 5px solid #a8874b; }
+.confirmation-panel::after { right: 16px; bottom: 16px; border-right: 5px solid #a8874b; border-bottom: 5px solid #a8874b; }
+dialog h2 { font-size: 40px; text-align: center; line-height: 1.3; overflow-wrap: anywhere; white-space: pre-line; }
 .dialog-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 12px 0 0; }
 .dialog-actions button { min-width: 230px; min-height: 64px; padding: 0 0 0 32px; font-size: 48px; text-align: left; }
 #confirm-no { padding-left: 72px; }

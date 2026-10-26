@@ -118,8 +118,12 @@
   function resize() {
     const box = document.querySelector("#viewport").getBoundingClientRect();
     const [width, height] = state?.screen === "result" || state?.screen === "complete" ? [864, 1536] : [941, 1672];
-    const scale = Math.min(box.width / width, box.height / height);
-    const verticalOffset = Math.max(0, (box.height - height * scale) / 2);
+    const widthScale = box.width / width;
+    const heightScale = box.height / height;
+    const titleScreen = !state || state.screen === "tutorial";
+    const titleCrop = titleScreen && widthScale > heightScale && height - box.height / widthScale <= 180;
+    const scale = titleCrop ? widthScale : Math.min(widthScale, heightScale);
+    const verticalOffset = (box.height - height * scale) / 2;
     document.documentElement.style.setProperty("--art-width", `${width}px`);
     document.documentElement.style.setProperty("--art-height", `${height}px`);
     document.documentElement.style.setProperty("--scale", scale);
@@ -269,10 +273,11 @@
     for (const [offset, side, label] of [[-1, "left", "前の候補者"], [1, "right", "次の候補者"]]) {
       const index = (state.candidate + offset + 3) % 3;
       const person = characters.get(GROUPS[state.review][index]);
-      const mini = button("", () => select(index), `mini ${side}`);
+      const mini = element("div", `mini ${side}`);
       const copy = element("span", "mini-copy");
       copy.append(element("small", "", `ID ${person.id}`), element("span", "", person.name), element("span", "mini-info", person.basicInfo));
       mini.append(copy);
+      mini.setAttribute("role", "group");
       mini.setAttribute("aria-label", `${label} ${person.name}の報告書`);
       cards.push(mini, button("", () => select(index), `arrow ${side}`));
       cards[cards.length - 1].setAttribute("aria-label", label);
