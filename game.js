@@ -22,7 +22,7 @@
   const scene = document.querySelector("#scene");
   const game = document.querySelector("#game");
   const dialog = document.querySelector("#confirmation");
-  const transitionDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 100;
+  const transitionDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240;
   const notices = new Set();
   let characters = new Map(), state, saved = null, busy = false, pending = null, returnFocus = null, scrollSaveFrame = null;
   let dialogue = null;
@@ -117,11 +117,12 @@
   });
   function resize() {
     const box = document.querySelector("#viewport").getBoundingClientRect();
-    const scale = box.width / 864;
-    const verticalCrop = Math.max(0, 1536 - box.height / scale);
-    const verticalOffset = Math.max(0, (box.height - 1536 * scale) / 2);
+    const [width, height] = state?.screen === "result" || state?.screen === "complete" ? [864, 1536] : [941, 1672];
+    const scale = Math.min(box.width / width, box.height / height);
+    const verticalOffset = Math.max(0, (box.height - height * scale) / 2);
+    document.documentElement.style.setProperty("--art-width", `${width}px`);
+    document.documentElement.style.setProperty("--art-height", `${height}px`);
     document.documentElement.style.setProperty("--scale", scale);
-    document.documentElement.style.setProperty("--vertical-crop", `${verticalCrop}px`);
     document.documentElement.style.setProperty("--vertical-offset", `${verticalOffset}px`);
   }
   window.addEventListener("resize", resize);
@@ -170,7 +171,9 @@
   }
   function titleMark() {
     const mark = element("header", "title-mark");
-    mark.append(element("h1", "", "天国審査"), element("p", "", "死者審査所 人間部門"));
+    const heading = element("h1");
+    heading.append(element("span", "", "天国"), element("span", "", "審査"));
+    mark.append(heading);
     scene.append(mark);
   }
   function startNew() {
@@ -271,7 +274,7 @@
       copy.append(element("small", "", `ID ${person.id}`), element("span", "", person.name), element("span", "mini-info", person.basicInfo));
       mini.append(copy);
       mini.setAttribute("aria-label", `${label} ${person.name}の報告書`);
-      cards.push(mini, button(side === "left" ? "◀︎" : "▶︎", () => select(index), `arrow ${side}`));
+      cards.push(mini, button("", () => select(index), `arrow ${side}`));
       cards[cards.length - 1].setAttribute("aria-label", label);
     }
     return cards;
@@ -287,12 +290,8 @@
     if (scrollSaveFrame !== null) cancelAnimationFrame(scrollSaveFrame);
     scrollSaveFrame = null;
     state.candidate = index;
-    state.scrolls[GROUPS[state.review][index]] = 0;
     save();
     scene.querySelector(".review-content").replaceWith(reviewContent());
-    scene.querySelectorAll(".choice-row button").forEach((choice, choiceIndex) => {
-      choice.setAttribute("aria-current", String(choiceIndex === index));
-    });
   }
   function review() {
     scene.append(reviewContent());
@@ -302,11 +301,10 @@
     GROUPS[state.review].forEach((id, index) => {
       const person = characters.get(id);
       const choose = button(person.name, () => {
-        select(index);
-        const replacement = scene.querySelectorAll(".choice-row button")[index];
-        openConfirmation(`${person.name}を天国に送りますか？`, () => commit(id), replacement);
+        capturePaperScroll();
+        save();
+        openConfirmation(`${person.name}を天国に送りますか？`, () => commit(id), choose);
       });
-      choose.setAttribute("aria-current", String(index === state.candidate));
       choose.setAttribute("aria-label", `${person.name}を天国に送る`);
       row.append(choose);
     });
@@ -347,19 +345,14 @@
   }
   function result() {
     const panel = element("section", "result-panel");
-    panel.append(element("h2", "", `第${state.review + 1}回 審査結果`));
     const chosen = state.choices[state.review];
     panel.append(element("p", "destination", `${characters.get(chosen).name}を天国に送りました`));
-    const hell = element("div", "destination hell");
-    hell.append(element("strong", "", "地獄"));
-    for (const id of GROUPS[state.review].filter(id => id !== chosen)) hell.append(element("p", "", characters.get(id).name));
-    panel.append(hell);
-    const proceed = button(state.review === 4 ? "審判を終える" : "次の審査へ進む", () => change(() => {
+    const proceed = button(state.review === 4 ? "審判を終える" : "次の審査へすすむ", () => change(() => {
       if (state.review === 4) state.screen = "complete";
       else { state.review++; state.candidate = 1; state.screen = "review"; }
       save();
     }), "proceed");
-    proceed.setAttribute("aria-label", `▶ ${state.review === 4 ? "審判を終える" : "次の審査へ進む"}`);
+    proceed.setAttribute("aria-label", `▶ ${state.review === 4 ? "審判を終える" : "次の審査へすすむ"}`);
     panel.append(proceed);
     scene.append(element("p", "result-dialogue", state.resultDialogues[state.review]));
     scene.append(panel);
@@ -370,6 +363,7 @@
     const fading = scene.classList.contains("fading");
     scene.replaceChildren();
     scene.className = state?.screen || "title";
+    resize();
     if (fading) scene.classList.add("fading");
     if (!state) { title(); return; }
     switch (state.screen) {
@@ -377,8 +371,10 @@
         titleMark();
         const tutorialSpeech = button("", advanceDialogue, "speech");
         const tutorialContent = element("p");
-        tutorialSpeech.append(tutorialContent, element("small", "", "タップ / Enter で次へ ▼"));
+        tutorialSpeech.append(tutorialContent);
         scene.append(tutorialSpeech);
+        const tutorialHint = element("p", "tutorial-hint", "画面をタップして次へ");
+        scene.append(tutorialHint);
         startDialogue(TUTORIAL, state.tutorialStep, tutorialContent, line => {
           state.tutorialStep = line;
           save();
